@@ -1,0 +1,11 @@
+apiVersion: openchoreo.dev/v1alpha1
+kind: Project
+metadata:
+  name: ${PROJECT}
+  namespace: ${TEAM}
+spec:
+  deploymentPipelineRef:
+    name: ${TEAM}-deployment-pipeline
+  type:
+    kind: ${PROJECT_TYPE_KIND}
+    name: ${PROJECT_TYPE}

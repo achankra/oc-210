@@ -1,0 +1,19 @@
+# Actions are written resource:verb, and wildcards such as component:* are allowed.
+# These names appear in the OpenChoreo authorization docs. Compare them with an
+# existing role (occ authzrole list, occ clusterauthzrole list) before you apply.
+apiVersion: openchoreo.dev/v1alpha1
+kind: AuthzRole
+metadata:
+  name: team-developer
+  namespace: team-alpha
+spec:
+  description: Deploy and debug components in team-alpha
+  actions:
+    - "component:*"
+    - "workload:view"
+    - "workload:create"
+    - "releasebinding:create"
+    - "releasebinding:update"
+    - "project:view"
+    - "workflow:view"
+    - "namespace:view"

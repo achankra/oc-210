@@ -1,0 +1,48 @@
+apiVersion: openchoreo.dev/v1alpha1
+kind: ClusterProjectType
+metadata:
+  labels:
+    openchoreo.dev/name: starter-tier
+  name: starter-tier
+spec:
+  environmentConfigs:
+    openAPIV3Schema:
+      properties:
+        namespaceAnnotations:
+          additionalProperties:
+            type: string
+          default: {}
+          type: object
+        namespaceLabels:
+          additionalProperties:
+            type: string
+          default: {}
+          type: object
+      type: object
+  resources:
+  - id: cell-namespace
+    targetPlane: dataplane
+    template:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        annotations: ${environmentConfigs.namespaceAnnotations}
+        labels: ${oc_merge(metadata.labels, environmentConfigs.namespaceLabels)}
+        name: ${metadata.namespace}
+  - id: starter-tier-quota
+    targetPlane: dataplane
+    template:
+      apiVersion: v1
+      kind: ResourceQuota
+      metadata:
+        name: starter-tier
+        namespace: ${metadata.namespace}
+      spec:
+        hard:
+          requests.cpu: '4'
+          requests.memory: 8Gi
+          limits.cpu: '8'
+          limits.memory: 16Gi
+          persistentvolumeclaims: '5'
+          services.loadbalancers: '1'
+          count/deployments.apps: '10'

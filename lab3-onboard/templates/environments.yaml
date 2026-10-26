@@ -1,0 +1,21 @@
+apiVersion: openchoreo.dev/v1alpha1
+kind: Environment
+metadata:
+  name: development
+  namespace: ${TEAM}
+spec:
+  dataPlaneRef:
+    kind: ${DATAPLANE_KIND}
+    name: ${DATAPLANE_NAME}
+  isProduction: false
+---
+apiVersion: openchoreo.dev/v1alpha1
+kind: Environment
+metadata:
+  name: staging
+  namespace: ${TEAM}
+spec:
+  dataPlaneRef:
+    kind: ${DATAPLANE_KIND}
+    name: ${DATAPLANE_NAME}
+  isProduction: false

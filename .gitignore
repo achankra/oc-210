@@ -1,0 +1,35 @@
+# Python and editor files
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+
+# Editors and local settings
+.vscode/
+.idea/
+*.swp
+# Secrets: API keys and agent registrations that can hold tokens
+.env
+.env.*
+.mcp.json
+.claude/
+
+# Lab output: onboard.sh renders here, and every step logs its time
+rendered/
+onboarding-log.csv
+
+# Files the workbook steps write while you run the labs.
+# They are generated on each learner's cluster, so they are not committed.
+# Reference copies of them live in each lab's reference/ folder, which is committed.
+lab1-portal-scorecard/my-scorecard.csv
+lab2-work/
+lab2-catalog-check/pilot-docs-site.yaml
+lab3-onboard/team-alpha-envs.yaml
+lab3-onboard/team-alpha-pipeline.yaml
+lab3-onboard/alpha-shop-project.yaml
+lab3-onboard/alpha-shop-bindings.yaml
+lab3-onboard/order-service.yaml
+lab4-roles-quota/team-developer-role.yaml
+lab4-roles-quota/team-developer-binding.yaml
+lab4-roles-quota/starter-tier.yaml
+lab5-work/

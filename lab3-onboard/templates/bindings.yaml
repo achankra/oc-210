@@ -1,0 +1,26 @@
+# A project gets a cell namespace per environment only through a ProjectReleaseBinding.
+apiVersion: openchoreo.dev/v1alpha1
+kind: ProjectReleaseBinding
+metadata:
+  name: ${PROJECT}-development
+  namespace: ${TEAM}
+  labels:
+    openchoreo.dev/project: ${PROJECT}
+    openchoreo.dev/environment: development
+spec:
+  owner:
+    projectName: ${PROJECT}
+  environment: development
+---
+apiVersion: openchoreo.dev/v1alpha1
+kind: ProjectReleaseBinding
+metadata:
+  name: ${PROJECT}-staging
+  namespace: ${TEAM}
+  labels:
+    openchoreo.dev/project: ${PROJECT}
+    openchoreo.dev/environment: staging
+spec:
+  owner:
+    projectName: ${PROJECT}
+  environment: staging

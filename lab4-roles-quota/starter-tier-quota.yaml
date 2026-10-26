@@ -1,0 +1,20 @@
+# The ResourceQuota to add to your starter-tier ProjectType, using the Handbook's
+# starter tier. In the ProjectType it becomes a new entry in the resources list,
+# in the same id and template shape as the existing Namespace entry.
+#
+# Set metadata.namespace with the same expression the Namespace entry uses for the
+# cell namespace name. Leave the spec.hard values as they are.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: starter-tier
+  # namespace: <copy the expression from the Namespace entry>
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    persistentvolumeclaims: "5"
+    services.loadbalancers: "1"
+    count/deployments.apps: "10"

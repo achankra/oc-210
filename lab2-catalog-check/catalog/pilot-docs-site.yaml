@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: pilot-docs-site
+  description: Documentation site for the pilot team
+  tags:
+    - docs
+    - pilot
+  links:
+    - url: https://example.com/docs
+      title: Docs
+spec:
+  type: website
+  lifecycle: experimental
+  owner: group:default/REPLACE-WITH-AN-EXISTING-GROUP
+  system: REPLACE-WITH-YOUR-PROJECT-NAME

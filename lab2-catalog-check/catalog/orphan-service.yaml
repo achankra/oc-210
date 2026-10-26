@@ -1,0 +1,8 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: orphan-service
+  description: A service nobody owns
+spec:
+  type: service
+  owner: unknown
