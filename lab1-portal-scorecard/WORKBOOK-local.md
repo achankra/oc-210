@@ -1,6 +1,6 @@
 # Lab 1: Tour the portal, find a service
 
-*OC-210 workbook, local install edition (OpenChoreo v1.3.1 on k3d). Using the WSO2 sandbox instead? See [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md).*
+*OC-210 workbook, local install edition (OpenChoreo v1.3.2 on k3d). Using the WSO2 sandbox instead? See [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md).*
 
 **Goal:** Verify the install, deploy a sample service, and use the portal to find it and its architecture view. Then score the portal on the Handbook's six evaluation planes.
 

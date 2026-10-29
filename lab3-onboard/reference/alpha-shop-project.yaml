@@ -1,4 +1,0 @@
-{"apiVersion": "openchoreo.dev/v1alpha1", "kind": "Project",
- "metadata": {"name": "alpha-shop", "namespace": "team-alpha"},
- "spec": {"deploymentPipelineRef": {"name": "team-alpha-deployment-pipeline"},
-          "type": {"kind": "ClusterProjectType", "name": "default"}}}

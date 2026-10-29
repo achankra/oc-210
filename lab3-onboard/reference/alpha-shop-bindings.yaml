@@ -1,7 +1,0 @@
-{"apiVersion": "openchoreo.dev/v1alpha1", "kind": "ProjectReleaseBinding",
- "metadata": {"name": "alpha-shop-development", "namespace": "team-alpha"},
- "spec": {"owner": {"projectName": "alpha-shop"}, "environment": "development"}}
----
-{"apiVersion": "openchoreo.dev/v1alpha1", "kind": "ProjectReleaseBinding",
- "metadata": {"name": "alpha-shop-staging", "namespace": "team-alpha"},
- "spec": {"owner": {"projectName": "alpha-shop"}, "environment": "staging"}}

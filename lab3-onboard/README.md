@@ -1,60 +1,69 @@
-# Lab 3: onboard a team with occ
+# Lab 3: onboard a team through the portal
 
-This lab replaces a ticket queue with a short sequence of commands: a labeled team namespace, environments, a promotion pipeline and a project. You write the steps by hand in the workbook and then run the same steps from a script, so you can see what is worth automating.
+This lab replaces a ticket queue with self-service. The platform team sets up a team's space with one command. The team then creates its own project in the portal's Create Project wizard, which the portal generates for each ProjectType, and gets its cells. You time the whole thing, then look at the API underneath and onboard a second team through it.
 
 | Path | Purpose |
 |---|---|
-| `onboard.sh` | Renders the five files for a team (including the project bindings), checks them, and with `--apply` creates the objects |
+| `onboard.sh` | With a team name, creates the team space: namespace, environments and pipeline. With a project name too, also creates the project and its bindings. Checks first; `--apply` creates |
 | `templates/` | The namespace, environments, pipeline, project and project bindings, with `${...}` values |
+| `scripts/bind-project.sh` | Gives a project its cells, one ProjectReleaseBinding per environment, if it has none |
 | `scripts/render.py` | Fills a template. Stops if a value is missing |
-| `scripts/mark.sh` | Logs a step you ran by hand, so the timing counts it |
+| `scripts/mark.sh` | Logs a step you did in the portal or by hand, so the timing counts it |
 | `scripts/lib.sh` | The log helper the scripts share |
 
-
-The steps for this lab are in [WORKBOOK-local.md](WORKBOOK-local.md).
+The steps for this lab are in [WORKBOOK-local.md](WORKBOOK-local.md), or [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md) in the WSO2 sandbox.
 
 ## Files you create in this lab
 
-These are not in the repository until you run the step that writes them. Git ignores them.
-
 | File | Created in | What it is |
 |---|---|---|
-| `team-alpha-envs.yaml` | step 3 | The development and staging Environments, on your cluster's data plane |
-| `team-alpha-pipeline.yaml` | step 3 | The pipeline that promotes development to staging |
-| `alpha-shop-project.yaml` | step 4 | The `alpha-shop` Project |
-| `alpha-shop-bindings.yaml` | step 4 | One ProjectReleaseBinding per environment, which create the cells |
 | `onboarding-log.csv` | every step | The timing log `mark.sh` and the scripts write |
-| `rendered/TEAM/` | part B | What `onboard.sh` renders from `templates/` |
-| `order-service.yaml` | capstone | The capstone's service, written here so the log stays in one place |
+| `rendered/TEAM/` | steps 2 and 6 | What `onboard.sh` renders from `templates/` |
 
-`reference/` holds the pipeline, project and bindings. If a step fails or you fall behind, copy the file into place, for example `cp reference/alpha-shop-project.yaml .`, apply it, and carry on. The environments file has no reference copy, because it names your cluster's data plane.
+Git ignores both. The capstone writes to the same log.
 
 ## Requirements
 
-- The OpenChoreo cluster from the pre-work, and `kubectl` and `occ` signed in to it (`occ login`).
+- The OpenChoreo cluster from the pre-work, and `kubectl` and `occ` signed in to it.
+- The portal, signed in with `admin@openchoreo.dev` / `Admin@123`.
 - Python 3.9 or newer for `render.py`. No other packages.
 
-## Onboard with commands
+## The platform team: a team space
 
-Do the steps in the workbook by hand first and write down the time, as the lab asks. Then use the script on a second team to see the same result without typing the YAML.
-
-Check without creating anything:
+Check, then create:
 
 ```
 cd ~/oc-210-labs/lab3-onboard
-./onboard.sh team-demo demo-shop
+./onboard.sh team-alpha
+./onboard.sh team-alpha --apply
 ```
 
-This reads the data plane from the `development` environment in the `default` namespace, renders five files into `rendered/team-demo/`, and checks each one with a client-side dry run. Open the files. They are the objects you wrote by hand in the lab.
+This reads the data plane from the `development` environment in the `default` namespace, renders the namespace, environments and pipeline into `rendered/team-alpha/`, and checks them. With `--apply` it applies the namespace, then runs a server-side dry run and `occ apply` for each OpenChoreo object. The namespace carries `openchoreo.dev/control-plane=true`, so it appears in OpenChoreo and in the portal's wizards.
 
-Create the objects:
+## The team: a project from the portal
+
+In the portal, choose **Create**, then the Create Project template for the ProjectType you want. Fill in the namespace, the project name and the pipeline. The wizard creates the project and one ProjectReleaseBinding per environment, so the project gets its cells. Log the step so the timing counts it:
+
+```
+cd ~/oc-210-labs/lab3-onboard
+./scripts/mark.sh "project" "portal: Create Project, alpha-shop"
+```
+
+If the project has no cells, give it bindings:
+
+```
+cd ~/oc-210-labs/lab3-onboard
+./scripts/bind-project.sh team-alpha alpha-shop
+```
+
+## The API underneath
+
+The wizard and the script call the same OpenChoreo API. To onboard a team with no person in the loop, pass a project name and the script creates everything, bindings included:
 
 ```
 cd ~/oc-210-labs/lab3-onboard
 ./onboard.sh team-demo demo-shop --apply
 ```
-
-The script applies the namespace first. For each OpenChoreo object it runs a server-side dry run, then `occ apply`. It ends by listing namespaces and the team's projects.
 
 Options:
 
@@ -65,26 +74,20 @@ Options:
 | `--project-type-kind KIND` | `ClusterProjectType` | `ClusterProjectType` or `ProjectType` |
 | `--dataplane-kind`, `--dataplane-name` | read from `default` | Data plane the environments map to |
 
-Every command from an `--apply` run is written to `onboarding-log.csv`, with the time it ran. The capstone uses that file to compute your time-to-first-deploy. If you run a step by hand, log it so it counts:
-
-```
-cd ~/oc-210-labs/lab3-onboard
-./scripts/mark.sh "role and binding" "occ apply -f team-developer-role.yaml"
-```
-
-The first call creates the log and starts the clock. Delete the file to start over.
+Every command from an `--apply` run is written to `onboarding-log.csv`, with the time it ran. The first `mark.sh` call creates the log and starts the clock. Delete the file to start over.
 
 ## What you should see
 
-- `occ namespace list` shows `team-demo`, and `occ project list -n team-demo` shows `demo-shop`. The project appears in the portal.
+- `occ namespace list` shows `team-alpha`; `occ project list -n team-alpha` shows `alpha-shop`, created in the portal, with a cell namespace in development and staging.
+- `team-demo` and `demo-shop`, created by the script, look the same.
 
 ## If something fails
 
+- `team-alpha` is not offered in the wizard: the namespace needs `openchoreo.dev/control-plane=true`, which `onboard.sh` sets. Wait a minute for the portal to refresh.
 - `Could not read the data plane`: pass `--dataplane-kind` and `--dataplane-name`, or check that `kubectl get environment development -n default` works.
-- Project not listed: the namespace needs the label `openchoreo.dev/control-plane=true`. `onboard.sh` sets it. A namespace created another way may not have it.
-- An Environment is rejected: it must reference an existing data plane. Copy the reference from the `default` environment.
+- A project has no cells: run `./scripts/bind-project.sh TEAM PROJECT`. A project applied with `kubectl` gets no bindings.
 - A pipeline is rejected: its promotion paths must name environments that exist in the same namespace.
 
 ## How it maps to OpenChoreo
 
-A team namespace, its environments, its pipeline, its project and the project's bindings are ordinary OpenChoreo resources, so onboarding is applying five files in the right order. The Handbook builds an onboarding service to do this. In OpenChoreo the API already exists, and the portal, the CLI and a script are clients of it.
+The Handbook builds an onboarding API and puts the portal on top of it. In OpenChoreo both already exist: the platform team publishes ProjectTypes, the portal generates a Create Project wizard for each, and the wizard, `occ` and this script are all clients of the same API.

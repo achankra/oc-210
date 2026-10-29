@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Onboard a team: namespace, environments, pipeline, project and project bindings.
 #
-# Usage: ./onboard.sh TEAM PROJECT [options]
+# Usage: ./onboard.sh TEAM [PROJECT] [options]
+#
+# With TEAM only, it creates the team space (namespace, environments and pipeline)
+# and no project: the team then creates its project in the portal's Create Project
+# wizard. With PROJECT, it also creates the project and one binding per environment.
 #
 # By default this renders the files and checks them without touching the
 # cluster. Add --apply to create the objects.
@@ -23,8 +27,10 @@ set -eu
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/scripts/lib.sh"
 
-[ $# -ge 2 ] || { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
-TEAM="$1"; PROJECT="$2"; shift 2
+[ $# -ge 1 ] && [ "${1#-}" = "$1" ] || { sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+TEAM="$1"; shift
+PROJECT=""
+if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then PROJECT="$1"; shift; fi
 
 APPLY=0
 TIER="starter"
@@ -72,23 +78,25 @@ echo "Data plane: $DATAPLANE_KIND/$DATAPLANE_NAME"
 
 out="rendered/$TEAM"
 mkdir -p "$out"
-VARS="TEAM=$TEAM PROJECT=$PROJECT TIER=$TIER PROJECT_TYPE=$PROJECT_TYPE PROJECT_TYPE_KIND=$PROJECT_TYPE_KIND DATAPLANE_KIND=$DATAPLANE_KIND DATAPLANE_NAME=$DATAPLANE_NAME"
+VARS="TEAM=$TEAM PROJECT=${PROJECT:-none} TIER=$TIER PROJECT_TYPE=$PROJECT_TYPE PROJECT_TYPE_KIND=$PROJECT_TYPE_KIND DATAPLANE_KIND=$DATAPLANE_KIND DATAPLANE_NAME=$DATAPLANE_NAME"
+FILES="namespace environments pipeline"
+[ -n "$PROJECT" ] && FILES="$FILES project bindings"
 
 STEP="render files"
-for name in namespace environments pipeline project bindings; do
+for name in $FILES; do
   # shellcheck disable=SC2086
   python3 "$here/scripts/render.py" "$here/templates/$name.yaml" $VARS > "$out/$name.yaml"
 done
-log_row "$STEP" "render.py x5"
-echo "Rendered five files in $out/"
+log_row "$STEP" "render.py $FILES"
+echo "Rendered $FILES in $out/"
 
 if [ "$APPLY" -eq 0 ]; then
   STEP="check files"
-  for name in namespace environments pipeline project bindings; do
+  for name in $FILES; do
     run kubectl apply --dry-run=client -f "$out/$name.yaml"
   done
   echo
-  echo "Nothing was created. Run again with --apply to onboard $TEAM."
+  echo "Nothing was created. Run again with --apply."
   exit 0
 fi
 
@@ -96,7 +104,8 @@ STEP="namespace"
 run kubectl apply --dry-run=server -f "$out/namespace.yaml"
 run kubectl apply -f "$out/namespace.yaml"
 
-for name in environments pipeline project bindings; do
+for name in $FILES; do
+  [ "$name" = namespace ] && continue
   STEP="$name"
   run kubectl apply --dry-run=server -f "$out/$name.yaml"
   run occ apply -f "$out/$name.yaml"
@@ -104,6 +113,12 @@ done
 
 STEP="verify"
 run occ namespace list
+if [ -z "$PROJECT" ]; then
+  run kubectl get environments,deploymentpipelines -n "$TEAM"
+  echo
+  echo "Team space $TEAM is ready. The team creates its project in the portal. Log: $ONBOARD_LOG"
+  exit 0
+fi
 run occ project list -n "$TEAM"
 echo "Waiting for the cell namespaces of $PROJECT..."
 for _ in $(seq 1 24); do

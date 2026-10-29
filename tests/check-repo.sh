@@ -22,7 +22,8 @@ echo "Files the workbooks use"
 for f in \
   WORKBOOK.md prework/WORKBOOK-local.md prework/WORKBOOK-sandbox.md sandbox/restore.sh sandbox/README.md \
   {lab1-portal-scorecard,lab2-catalog-check,lab3-onboard,lab4-roles-quota,lab5-scaffold,capstone}/WORKBOOK-sandbox.md \
-  lab4-roles-quota/build_starter_tier.py tests/fixtures/default-clusterprojecttype.yaml \
+  lab4-roles-quota/build_starter_tier.py lab4-roles-quota/reference/starter-tier.yaml tests/fixtures/default-clusterprojecttype.yaml \
+  lab3-onboard/scripts/bind-project.sh lab5-scaffold/create-order-service.sh \
   lab1-portal-scorecard/{WORKBOOK-local.md,scorecard.py,sample-scorecard.csv,scorecard-template.csv} \
   lab2-catalog-check/{WORKBOOK-local.md,catalog_check.py,catalog/pilot-docs-site.yaml,catalog/billing-api.yaml,catalog/orphan-service.yaml} \
   lab3-onboard/{WORKBOOK-local.md,onboard.sh,scripts/mark.sh,scripts/lib.sh,scripts/render.py} \
@@ -43,8 +44,9 @@ done
 ok "relative links checked"
 
 echo "Scripts"
-for s in lab3-onboard/onboard.sh lab3-onboard/scripts/mark.sh lab4-roles-quota/apply-access.sh \
-         lab5-scaffold/check-endpoint.sh capstone/repeat.sh sandbox/restore.sh; do
+for s in lab3-onboard/onboard.sh lab3-onboard/scripts/mark.sh lab3-onboard/scripts/bind-project.sh \
+         lab4-roles-quota/apply-access.sh lab5-scaffold/check-endpoint.sh lab5-scaffold/create-order-service.sh \
+         capstone/repeat.sh sandbox/restore.sh; do
   [ -x "$s" ] || bad "$s is not executable: chmod +x $s"
   check "$s parses" bash -n "$s"
 done
@@ -54,7 +56,7 @@ check "sample scorecard passes" python3 lab1-portal-scorecard/scorecard.py lab1-
 fails "empty template is rejected" python3 lab1-portal-scorecard/scorecard.py lab1-portal-scorecard/scorecard-template.csv
 
 echo "Lab 2: catalog check"
-sed -e "s/REPLACE-WITH-AN-EXISTING-GROUP/platform-team/" -e "s/REPLACE-WITH-YOUR-PROJECT-NAME/team-alpha-pilot/" \
+sed -e "s/REPLACE-WITH-AN-EXISTING-GROUP/platform-team/" -e "s/REPLACE-WITH-YOUR-PROJECT-NAME/default/" \
   lab2-catalog-check/catalog/pilot-docs-site.yaml > "$tmp/pilot-docs-site.yaml"
 check "filled-in entry is complete" python3 lab2-catalog-check/catalog_check.py --strict "$tmp/pilot-docs-site.yaml"
 check "billing-api is complete" python3 lab2-catalog-check/catalog_check.py --strict lab2-catalog-check/catalog/billing-api.yaml
@@ -76,6 +78,19 @@ fails "render.py refuses a missing value" python3 lab3-onboard/scripts/render.py
 ( cd "$tmp" && "$root/lab3-onboard/scripts/mark.sh" start "occ login" >/dev/null \
   && sleep 1 && "$root/lab3-onboard/scripts/mark.sh" namespace "kubectl create namespace" >/dev/null )
 check "onboarding_scorecard.py reads a mark.sh log" python3 capstone/onboarding_scorecard.py "$tmp/onboarding-log.csv" --tickets 0
+# onboard.sh with stand-ins for kubectl and occ, so it renders without a cluster
+mkdir -p "$tmp/bin" "$tmp/space" "$tmp/team"
+printf '#!/bin/sh\nexit 0\n' > "$tmp/bin/kubectl"; cp "$tmp/bin/kubectl" "$tmp/bin/occ"; chmod +x "$tmp/bin/kubectl" "$tmp/bin/occ"
+DP="--dataplane-kind ClusterDataPlane --dataplane-name default"
+# shellcheck disable=SC2086
+( cd "$tmp/space" && PATH="$tmp/bin:$PATH" "$root/lab3-onboard/onboard.sh" team-x $DP >/dev/null 2>&1 )
+check "onboard.sh TEAM renders the team space and no project" bash -c \
+  "cd '$tmp/space/rendered/team-x' && [ -f namespace.yaml ] && [ -f environments.yaml ] && [ -f pipeline.yaml ] && [ ! -f project.yaml ] && [ ! -f bindings.yaml ]"
+# shellcheck disable=SC2086
+( cd "$tmp/team" && PATH="$tmp/bin:$PATH" "$root/lab3-onboard/onboard.sh" team-x x-shop $DP >/dev/null 2>&1 )
+check "onboard.sh TEAM PROJECT renders all five files" bash -c \
+  "cd '$tmp/team/rendered/team-x' && ls namespace.yaml environments.yaml pipeline.yaml project.yaml bindings.yaml"
+fails "onboard.sh refuses an option in place of the team" "$root/lab3-onboard/onboard.sh" --apply
 
 echo "Lab 4: role, binding, quota"
 for t in role binding; do
@@ -88,31 +103,19 @@ for t in role binding; do
 done
 check "starter quota sample passes" python3 lab4-roles-quota/check_quota.py lab4-roles-quota/samples/quota-starter.json
 fails "wrong quota sample is flagged" python3 lab4-roles-quota/check_quota.py lab4-roles-quota/samples/quota-wrong.json
-# The same edit as the Lab 4 step, run on a v1.3.1 export of the default ClusterProjectType
-cp tests/fixtures/default-clusterprojecttype.yaml "$tmp/starter-tier.yaml"
+# The Python edit in the Lab 4 workbook step, taken from the workbook itself and run on a
+# v1.3 export of the default ClusterProjectType: it must give the reference file
+grep -v '^#' tests/fixtures/default-clusterprojecttype.yaml > "$tmp/starter-tier.yaml"
 cp lab4-roles-quota/starter-tier-quota.yaml "$tmp/"
-check "Lab 4 edit builds a starter-tier ProjectType with the quota" bash -c "cd '$tmp' && python3 -c \"
-import yaml
-d = yaml.safe_load(open('starter-tier.yaml'))
-m = d['metadata']
-for k in ('uid', 'resourceVersion', 'creationTimestamp', 'generation', 'managedFields', 'ownerReferences', 'annotations'):
-    m.pop(k, None)
-d.pop('status', None)
-m['name'] = 'starter-tier'
-m['labels'] = {'openchoreo.dev/name': 'starter-tier'}
-res = d['spec']['resources']
-ns = next(r for r in res if r['id'] == 'cell-namespace')
-q = yaml.safe_load(open('starter-tier-quota.yaml'))
-q['metadata']['namespace'] = ns['template']['metadata']['name']
-res.append({'id': 'starter-tier-quota', 'targetPlane': ns.get('targetPlane', 'dataplane'), 'template': q})
-yaml.safe_dump(d, open('starter-tier.yaml', 'w'), sort_keys=False)
-d = yaml.safe_load(open('starter-tier.yaml'))
-assert d['metadata']['name'] == 'starter-tier'
-qr = [r for r in d['spec']['resources'] if r['id'] == 'starter-tier-quota'][0]
-assert qr['template']['kind'] == 'ResourceQuota'
-assert len(qr['template']['spec']['hard']) == 7
-assert qr['template']['metadata']['namespace'] == '\\\${metadata.namespace}'
-\""
+python3 - lab4-roles-quota/WORKBOOK-local.md > "$tmp/edit.py" <<'PY'
+import sys
+md = open(sys.argv[1]).read()
+start = md.index('python3 -c "\nimport yaml\nd = yaml.safe_load(open(\'starter-tier.yaml\'))')
+body = md[start + len('python3 -c "\n'):]
+print(body[:body.index('\n"\n')])
+PY
+check "the Lab 4 workbook edit gives reference/starter-tier.yaml" bash -c \
+  "cd '$tmp' && python3 edit.py && diff starter-tier.yaml '$root/lab4-roles-quota/reference/starter-tier.yaml'"
 
 grep -v '^#' tests/fixtures/default-clusterprojecttype.yaml > "$tmp/default.yaml"
 check "build_starter_tier.py (sandbox restore) matches reference/starter-tier.yaml" bash -c \

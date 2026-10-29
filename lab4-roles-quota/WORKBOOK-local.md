@@ -1,78 +1,44 @@
-# Lab 4: Access roles and a quota
+# Lab 4: Publish a project type as a portal wizard
 
-*OC-210 workbook, local install edition (OpenChoreo v1.3.1 on k3d). Using the WSO2 sandbox instead? See [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md).*
+*OC-210 workbook, local install edition (OpenChoreo v1.3.2 on k3d). Using the WSO2 sandbox instead? See [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md).*
 
-**Goal:** Give the team-alpha developers scoped access with a role and a binding, and bound the team's cell with a starter-tier quota.
+**Goal:** As the platform team, publish a starter-tier ProjectType with the Handbook's quota and watch the portal turn it into a Create Project wizard, with no template to write. As the team, create a project from it and find the quota in its cells. Then give the team's developers access.
 
-## A. List roles
+## A. One wizard per project type
 
-### 1. See what exists
-
-The roles OpenChoreo ships with are cluster roles. The team-alpha namespace has none of its own yet.
+### 1. See the types and their wizards
 
 ```bash
-occ clusterauthzrole list
-occ authzrole list -n team-alpha
-kubectl get clusterauthzrole developer -o yaml
+kubectl get clusterprojecttypes
 ```
 
-Find `spec.actions`. Actions are written `resource:verb`, and wildcards are allowed.
-
-### 2. See the claims the existing bindings match
+**macOS**
 
 ```bash
-kubectl api-resources | grep -i authz
-kubectl get clusterauthzrolebindings -o custom-columns=\
-NAME:.metadata.name,CLAIM:.spec.entitlement.claim,VALUE:.spec.entitlement.value
+open http://openchoreo.localhost:8080/create
 ```
 
-Users are matched on the `groups` claim (for example `admins`, `developers`); service clients on `client_id`. Your binding in part C uses `groups`.
+**Linux**
 
-## B. Role
+```bash
+xdg-open http://openchoreo.localhost:8080/create
+```
 
-### 3. Create a team-developer role
+**Windows, in the WSL 2 Ubuntu terminal**
+
+```bash
+explorer.exe http://openchoreo.localhost:8080/create
+```
+
+Sign in with `admin@openchoreo.dev` / `Admin@123`. The Create page shows one Create Project template for each ProjectType: today only the default one.
+
+## B. Publish the starter tier
+
+### 2. Create the starter-tier ProjectType
 
 > **Dry run first:** the block checks with a server-side dry run before it changes anything.
 
-The role template in the lab folder, filled in for team-alpha. The action names appear in the OpenChoreo authorization docs, which do not list every action; compare them with the role you read in step 1.
-
-```bash
-cd ~/oc-210-labs/lab4-roles-quota
-python3 ../lab3-onboard/scripts/render.py templates/role.yaml TEAM=team-alpha \
-  > team-developer-role.yaml
-cat team-developer-role.yaml
-kubectl apply --dry-run=server -f team-developer-role.yaml
-occ apply -f team-developer-role.yaml
-occ authzrole list -n team-alpha
-```
-
-## C. Binding
-
-### 4. Bind it to the team group
-
-> **Dry run first:** the block checks with a server-side dry run before it changes anything.
-
-The Handbook binds Keycloak groups. Here the subject is an entitlement: a claim and value from your ThunderID token. Without a scope the binding covers the whole namespace.
-
-```bash
-cd ~/oc-210-labs/lab4-roles-quota
-python3 ../lab3-onboard/scripts/render.py templates/binding.yaml TEAM=team-alpha \
-  > team-developer-binding.yaml
-cat team-developer-binding.yaml
-kubectl apply --dry-run=server -f team-developer-binding.yaml
-occ apply -f team-developer-binding.yaml
-occ authzrolebinding list -n team-alpha
-```
-
-`./apply-access.sh team-alpha --apply` does steps 3 and 4 in one command; the capstone uses it.
-
-## D. ProjectType with a quota
-
-### 5. Create a starter-tier ProjectType
-
-> **Dry run first:** the block checks with a server-side dry run before it changes anything.
-
-Export the default type. One Python command then renames it `starter-tier`, strips the server-added fields, keeps the Namespace entry (`id: cell-namespace`), and adds the ResourceQuota from `starter-tier-quota.yaml` as a new entry with the same plane and namespace expression as the Namespace entry.
+Export the default type. One Python command renames it `starter-tier`, gives it the display name and description the portal shows on its wizard, strips the server-added fields, and adds the ResourceQuota from `starter-tier-quota.yaml` to the cell namespace.
 
 | Quota Key (Handbook Starter Tier) | Value |
 |---|---|
@@ -83,7 +49,7 @@ Export the default type. One Python command then renames it `starter-tier`, stri
 | `count/deployments.apps` | 10 |
 
 ```bash
-# once per cluster: let the data plane agent manage quotas
+# once per cluster: let the cluster agent manage quotas
 kubectl create clusterrole lab-cluster-agent-quotas \
   --verb=get,list,watch,create,update,patch,delete --resource=resourcequotas,limitranges
 kubectl create clusterrolebinding lab-cluster-agent-quotas \
@@ -92,7 +58,6 @@ kubectl create clusterrolebinding lab-cluster-agent-quotas \
 
 cd ~/oc-210-labs/lab4-roles-quota
 source ~/oc-210-labs/.venv/bin/activate
-kubectl get clusterprojecttypes
 kubectl get clusterprojecttype default -o yaml > starter-tier.yaml
 python3 -c "
 import yaml
@@ -104,6 +69,8 @@ for k in drop: m.pop(k, None)
 d.pop('status', None)
 m['name'] = 'starter-tier'
 m['labels'] = {'openchoreo.dev/name': 'starter-tier'}
+m['annotations'] = {'openchoreo.dev/display-name': 'Starter tier',
+'openchoreo.dev/description': 'A cell with the starter-tier quota: 4 CPU and 8Gi requested, up to 10 deployments.'}
 res = d['spec']['resources']
 ns = next(r for r in res if r['id'] == 'cell-namespace')
 q = yaml.safe_load(open('starter-tier-quota.yaml'))
@@ -118,23 +85,57 @@ kubectl apply -f starter-tier.yaml
 kubectl get clusterprojecttypes
 ```
 
-The list shows `default` and `starter-tier`. If the dry run returns an error, it names the field the API rejected. The data plane agent creates everything a project type renders, and out of the box it may not manage ResourceQuotas. Without this grant the cell apply fails with `resourcequotas ... is forbidden` and none of the type's resources land. A project type can only stamp out what the agent is allowed to manage. If `create` says `AlreadyExists`, the grant is already there.
+The list shows `default` and `starter-tier`. The cluster agent creates everything a project type renders, and on any install it cannot manage ResourceQuotas until you grant it; without the grant the cell fails with `resourcequotas ... is forbidden`. If `create` says `AlreadyExists`, the grant is already there.
 
-## E. Use it and verify
+### 3. Find its wizard in the portal
 
-### 6. Create a project that uses the type
+**macOS**
 
 ```bash
-cd ~/oc-210-labs/lab3-onboard
-./onboard.sh team-alpha alpha-pilot --project-type starter-tier --apply
-occ project list -n team-alpha
+open http://openchoreo.localhost:8080/create
 ```
 
-The script finds the namespace already exists and applies the rest. A type is fixed when the project is created, so the type of an existing project cannot be changed; that is why this is a new project.
+**Linux**
 
-### 7. Check the quota in the cell
+```bash
+xdg-open http://openchoreo.localhost:8080/create
+```
 
-The ProjectReleaseBinding for a project and environment owns the cell namespace. Wait about a minute for it to reconcile, then:
+**Windows, in the WSL 2 Ubuntu terminal**
+
+```bash
+explorer.exe http://openchoreo.localhost:8080/create
+```
+
+A Create Project template for **Starter tier** is now listed, with the description you set. Nobody wrote a template: publishing the type is the whole job. If it is not there yet, wait a minute and reload.
+
+## C. The team uses it
+
+### 4. Create alpha-pilot from the Starter tier wizard
+
+**macOS**
+
+```bash
+open http://openchoreo.localhost:8080/create
+```
+
+**Linux**
+
+```bash
+xdg-open http://openchoreo.localhost:8080/create
+```
+
+**Windows, in the WSL 2 Ubuntu terminal**
+
+```bash
+explorer.exe http://openchoreo.localhost:8080/create
+```
+
+Choose **Create** in the left menu (or http://openchoreo.localhost:8080/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Project template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-alpha`, the project name `alpha-pilot` and the deployment pipeline `team-alpha-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. A project's type is fixed when it is created, which is why this is a new project rather than a change to `alpha-shop`.
+
+### 5. Check the quota in the cell
+
+The ProjectReleaseBinding for each environment owns a cell namespace. Wait about a minute for it to reconcile, then:
 
 ```bash
 kubectl get projectreleasebindings -n team-alpha
@@ -149,22 +150,41 @@ python3 check_quota.py samples/quota-wrong.json
 kubectl get resourcequota -n $CELL -o json | python3 check_quota.py
 ```
 
-The samples show both outcomes first. The last line should print seven OK lines for your cell.
+The samples show both outcomes first. The last line should print seven OK lines for your cell. Every project created from the Starter tier wizard gets the same quota.
+
+## D. Give the team access
+
+### 6. Apply the team-developer role and binding
+
+> **Dry run first:** the block checks with a server-side dry run before it changes anything.
+
+A team needs access as well as a project. The script renders a `team-developer` role and a binding to the group `team-alpha-developers` from `templates/`, checks them, and with `--apply` creates them.
+
+```bash
+cd ~/oc-210-labs/lab4-roles-quota
+./apply-access.sh team-alpha
+cat rendered/team-alpha/role.yaml rendered/team-alpha/binding.yaml
+./apply-access.sh team-alpha --apply
+occ authzrole list -n team-alpha
+occ authzrolebinding list -n team-alpha
+```
+
+Members of `team-alpha-developers` can now deploy and debug in team-alpha, and see its projects in the portal. Users match on the `groups` claim; a pipeline or bot would be bound by its `client_id` instead. OC-201 Lab 2 covers the role model in depth.
 
 ## Checkpoint
 
+- [ ] `kubectl get clusterprojecttypes` shows `starter-tier`, and the portal lists a Starter tier wizard
+- [ ] `alpha-pilot`, created from that wizard, has a cell with seven OK lines from `check_quota.py`
 - [ ] `occ authzrole list -n team-alpha` shows `team-developer`
-- [ ] The binding lists the group entitlement `team-alpha-developers`
-- [ ] `check_quota.py` prints seven OK lines for the alpha-pilot cell
 
 ## Troubleshooting
 
-- Role rejected: compare field names with `kubectl get clusterauthzrole developer -o yaml`; schemas differ by version.
-- `cell namespace:` prints nothing: the binding has not reconciled. Run `kubectl get projectreleasebindings -n team-alpha` and wait.
-- `resourcequotas ... is forbidden` on the project binding: run the first lines of step 5 (the agent grant), then `kubectl annotate projectreleasebinding alpha-pilot-development -n team-alpha lab/retry=$(date +%s) --overwrite`.
+- No Starter tier wizard: wait a minute and reload the Create page. Run `kubectl get clusterprojecttype starter-tier -o jsonpath='{.metadata.annotations}'` to check the display name.
+- `cell namespace:` prints nothing: the binding has not reconciled, or the wizard created none. Run `kubectl get projectreleasebindings -n team-alpha`; if `alpha-pilot` has none, run `../lab3-onboard/scripts/bind-project.sh team-alpha alpha-pilot`.
+- `resourcequotas ... is forbidden` on the project binding: run the grant lines of step 2, then `kubectl annotate projectreleasebinding alpha-pilot-development -n team-alpha lab/retry=$(date +%s) --overwrite`.
 - `No ResourceQuota limits found`: run `kubectl get project alpha-pilot -n team-alpha -o jsonpath='{.spec.type}'`; it must name `starter-tier`.
 - `ModuleNotFoundError: yaml`: run `source ~/oc-210-labs/.venv/bin/activate` and repeat the step.
-- Cannot match a group: the value must match the `groups` claim in the token exactly.
+- Role rejected: compare field names with `kubectl get clusterauthzrole developer -o yaml`.
 
 ---
 

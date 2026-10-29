@@ -1,4 +1,0 @@
-{"apiVersion": "openchoreo.dev/v1alpha1", "kind": "DeploymentPipeline",
- "metadata": {"name": "team-alpha-deployment-pipeline", "namespace": "team-alpha"},
- "spec": {"promotionPaths": [{"sourceEnvironmentRef": {"name": "development"},
-                              "targetEnvironmentRefs": [{"name": "staging"}]}]}}

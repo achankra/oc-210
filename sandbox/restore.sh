@@ -21,7 +21,7 @@ lab3_state() {
 }
 
 lab4_type() {
-  echo "== Lab 4: quota grant for the data plane agent"
+  echo "== Lab 4: quota grant for the cluster agent"
   kubectl create clusterrole lab-cluster-agent-quotas \
     --verb=get,list,watch,create,update,patch,delete --resource=resourcequotas,limitranges \
     --dry-run=client -o yaml | kubectl apply -f -

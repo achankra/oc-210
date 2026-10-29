@@ -10,7 +10,7 @@ A sandbox session lasts one hour and keeps nothing, but Labs 4, 5 and the capsto
 
 | Run | Recreates |
 |---|---|
-| `~/oc-210-labs/sandbox/restore.sh lab4` | team-alpha with its environments, pipeline and the alpha-shop project (Lab 3) |
+| `~/oc-210-labs/sandbox/restore.sh lab4` | team-alpha with its environments, pipeline and the alpha-shop project (Lab 3), created through the API |
 | `~/oc-210-labs/sandbox/restore.sh lab5` | The lab4 state, plus the quota grant, the starter-tier ProjectType and the alpha-pilot project (Lab 4) |
 | `~/oc-210-labs/sandbox/restore.sh capstone` | The quota grant and the starter-tier ProjectType (Lab 4) |
 

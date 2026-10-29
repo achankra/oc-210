@@ -3,8 +3,9 @@
 
 Usage: build_starter_tier.py EXPORT.yaml QUOTA.yaml > starter-tier.yaml
 
-The same edit as Lab 4 step 5: rename the type, strip the fields the server
-sets, and add the ResourceQuota as a new resource in the cell namespace.
+The same edit as Lab 4 step 2: rename the type, give it the display name and
+description its portal wizard shows, strip the fields the server sets, and add
+the ResourceQuota as a new resource in the cell namespace.
 The sandbox restore script uses it to rebuild Lab 4 in a new session.
 """
 import sys
@@ -24,6 +25,9 @@ def main(argv):
     d.pop("status", None)
     m["name"] = "starter-tier"
     m["labels"] = {"openchoreo.dev/name": "starter-tier"}
+    # the portal shows these on the Create Project wizard it generates for the type
+    m["annotations"] = {"openchoreo.dev/display-name": "Starter tier",
+                        "openchoreo.dev/description": "A cell with the starter-tier quota: 4 CPU and 8Gi requested, up to 10 deployments."}
     res = d["spec"]["resources"]
     ns = next(r for r in res if r["id"] == "cell-namespace")
     q = yaml.safe_load(open(argv[2]))

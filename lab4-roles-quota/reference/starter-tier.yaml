@@ -4,6 +4,10 @@ metadata:
   labels:
     openchoreo.dev/name: starter-tier
   name: starter-tier
+  annotations:
+    openchoreo.dev/display-name: Starter tier
+    openchoreo.dev/description: 'A cell with the starter-tier quota: 4 CPU and 8Gi
+      requested, up to 10 deployments.'
 spec:
   environmentConfigs:
     openAPIV3Schema:
