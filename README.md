@@ -40,12 +40,53 @@ Every command in the workbook and in these READMEs uses `~/oc-210-labs`. If the 
 - Docker, k3d, kubectl, Helm and the `occ` CLI v1.3.2, with the OpenChoreo cluster from the pre-work running.
 - Python 3.9 or newer, with PyYAML in `.venv` for Labs 2 and 4.
 
+## When sign-in or the installer fails
+
+**Portal sign-in fails with `Authentication failed, Failed to obtain access token`, and the catalog stays empty.** The cluster was restarted without k3d, for example by restarting Docker or Colima, and CoreDNS lost the `host.k3d.internal` entry that k3d adds on `k3d cluster start`. The installer's DNS rewrite sends every `*.openchoreo.localhost` name inside the cluster to `host.k3d.internal`, so the portal can no longer reach the identity provider at `thunder.openchoreo.localhost`; its log shows `ENOTFOUND thunder.openchoreo.localhost`. Check the entry:
+
+```
+kubectl -n kube-system get configmap coredns -o jsonpath='{.data.NodeHosts}'; echo
+```
+
+If no line names `host.k3d.internal`, stop and start the cluster through k3d, which adds it back:
+
+```
+k3d cluster stop openchoreo
+k3d cluster start openchoreo
+kubectl wait -n openchoreo-control-plane --for=condition=available --timeout=300s deployment --all
+```
+
+Confirm the name resolves inside the cluster, then sign in again in a private window:
+
+```
+kubectl run dns-test --restart=Never --image=busybox:1.36 -- nslookup -type=a thunder.openchoreo.localhost
+sleep 10; kubectl logs dns-test; kubectl delete pod dns-test
+```
+
+The lookup prints an `Address:` line. After any restart, start the cluster with `k3d cluster start openchoreo` rather than restarting its container.
+
+**Re-running the installer fails at the control plane with `UPGRADE FAILED: conflict occurred while applying object openchoreo-control-plane/cluster-gateway-ca`.** An earlier `kubectl apply` wrote the cluster gateway's CA certificate into this ConfigMap, and Helm 4 applies upgrades server-side, so it will not overwrite a field that another tool owns. Everything before this step is fine. Delete the ConfigMap and run the same install command again:
+
+```
+kubectl delete configmap cluster-gateway-ca -n openchoreo-control-plane
+```
+
+The control plane does not need this copy after the first install, and the installer does not recreate it. Each plane keeps its own copy, which you can check is still there:
+
+```
+kubectl get configmap -A | grep cluster-gateway-ca
+```
+
+It lists the data, workflow and observability plane namespaces. The pre-work asks for Helm v3 (`helm version --short`); with Helm 4, delete the ConfigMap before each re-run.
+
 ## Known issues on v1.3
 
 The course runs on v1.3.2. Every row holds on v1.3.1 and v1.3.2. The labs already work around each of these. If you see one of the symptoms, the last column says what fixes it and which lab covers it.
 
 | Symptom | Cause | Fix, and where |
 |---|---|---|
+| Portal sign-in fails with `Failed to obtain access token` after a Docker or Colima restart | CoreDNS lost the `host.k3d.internal` entry, so the portal cannot reach the identity provider | `k3d cluster stop openchoreo`, then `k3d cluster start openchoreo`; see [When sign-in or the installer fails](#when-sign-in-or-the-installer-fails) |
+| Re-running the installer fails with `UPGRADE FAILED: conflict ... cluster-gateway-ca` | An earlier `kubectl apply` owns the ConfigMap's `ca.crt`, and Helm 4 will not overwrite it | Delete the ConfigMap and re-run the installer; the planes keep their own copies; see [When sign-in or the installer fails](#when-sign-in-or-the-installer-fails) |
 | zsh runs `#` lines as commands | Comments are off in interactive zsh | `setopt interactivecomments`, pre-work |
 | A new project gets no cell namespaces and nothing deploys into it | Cells come only from ProjectReleaseBindings; the portal wizard creates them, but a project applied with `kubectl` gets none | `scripts/bind-project.sh TEAM PROJECT`, Lab 3; `onboard.sh` creates them |
 | A new team namespace does not appear in `occ namespace list` or in the portal's wizards | It lacks the control-plane label | `openchoreo.dev/control-plane=true`, set by `onboard.sh`, Lab 3 step 2 |
