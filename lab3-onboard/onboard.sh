@@ -120,9 +120,12 @@ if [ -z "$PROJECT" ]; then
   exit 0
 fi
 run occ project list -n "$TEAM"
-echo "Waiting for the cell namespaces of $PROJECT..."
+# One cell per binding: wait until every environment has its namespace.
+want=$(grep -c '^kind: ProjectReleaseBinding' "$out/bindings.yaml")
+echo "Waiting for the $want cell namespaces of $PROJECT..."
 for _ in $(seq 1 24); do
-  kubectl get namespaces -l openchoreo.dev/project="$PROJECT" -o name | grep -q . && break
+  have=$(kubectl get namespaces -l openchoreo.dev/project="$PROJECT" -o name | grep -c . || true)
+  [ "$have" -ge "$want" ] && break
   sleep 5
 done
 run kubectl get namespaces -l openchoreo.dev/project="$PROJECT" -L openchoreo.dev/environment
