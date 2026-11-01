@@ -30,13 +30,13 @@ xdg-open http://openchoreo.localhost:8080/create
 explorer.exe http://openchoreo.localhost:8080/create
 ```
 
-Sign in with `admin@openchoreo.dev` / `Admin@123`. Each ComponentType has its own Create Component template: service, web application, scheduled task and worker. A platform team adds a starter kit by publishing a type, not by writing a template.
+Sign in with `admin@openchoreo.dev` / `Admin@123`. On the Create page, open the **Component** card under Application Resources: each ComponentType has its own template there, service, web application, scheduled task and worker. A platform team adds a starter kit by publishing a type, not by writing a template.
 
 ## B. Create the service
 
 ### 2. Create order-service from the Service wizard
 
-Open http://openchoreo.localhost:8080/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Component template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
+Open http://openchoreo.localhost:8080/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Component** card (Browse component templates) and pick the template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
 
 | Field | Value |
 |---|---|
@@ -117,7 +117,7 @@ The same ComponentType reference, image and endpoint the wizard asked for. The p
 
 ## Troubleshooting
 
-- No Service template on the Create page: run `kubectl get clustercomponenttypes`; the template's name comes from the type's display name.
+- No Service template under the Component card: run `kubectl get clustercomponenttypes`; the template's name comes from the type's display name.
 - Component not Ready: errors show in its status, not when it is created. Run `kubectl get component order-service -n team-alpha -o jsonpath='{.status.conditions}'`.
 - 404 from `check-endpoint.sh`: the endpoint name is part of the path. Run `kubectl get httproute -A -l openchoreo.dev/component=order-service -o yaml | grep -A3 path:` and use that path.
 - Quota error on the pod: run `kubectl describe resourcequota -n $(kubectl get deployment -A -l openchoreo.dev/component=order-service -o jsonpath='{.items[0].metadata.namespace}')`.

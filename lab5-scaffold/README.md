@@ -23,7 +23,7 @@ Git ignores it.
 
 ## Without the wizard
 
-If the portal has no Create Component template for the Service type, create the same component through the API:
+If the portal has no Service template under the **Component** card on the Create page, create the same component through the API:
 
 ```
 cd ~/oc-210-labs/lab5-scaffold

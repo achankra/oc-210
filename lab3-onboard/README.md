@@ -42,7 +42,7 @@ This reads the data plane from the `development` environment in the `default` na
 
 ## The team: a project from the portal
 
-In the portal, choose **Create**, then the Create Project template for the ProjectType you want. Fill in the namespace, the project name and the pipeline. The wizard creates the project and one ProjectReleaseBinding per environment, so the project gets its cells. Log the step so the timing counts it:
+In the portal, choose **Create**, open the **Project** card, and pick the template for the ProjectType you want. Fill in the namespace, the project name and the pipeline. The wizard creates the project and one ProjectReleaseBinding per environment, so the project gets its cells. Log the step so the timing counts it:
 
 ```
 cd ~/oc-210-labs/lab3-onboard

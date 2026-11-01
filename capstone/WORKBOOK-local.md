@@ -49,7 +49,7 @@ xdg-open http://openchoreo.localhost:8080/create
 explorer.exe http://openchoreo.localhost:8080/create
 ```
 
-Choose **Create** in the left menu (or http://openchoreo.localhost:8080/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Project template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-beta`, the project name `beta-shop` and the deployment pipeline `team-beta-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter.
+Choose **Create** in the left menu (or http://openchoreo.localhost:8080/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Project** card (Browse project templates) and pick the template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-beta`, the project name `beta-shop` and the deployment pipeline `team-beta-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter.
 
 ```bash
 cd ~/oc-210-labs/lab3-onboard
@@ -66,7 +66,7 @@ cd ~/oc-210-labs/lab3-onboard
 
 ### 5. Create, call and promote order-service
 
-Open http://openchoreo.localhost:8080/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Component template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
+Open http://openchoreo.localhost:8080/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Component** card (Browse component templates) and pick the template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
 
 | Field | Value |
 |---|---|

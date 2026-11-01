@@ -38,8 +38,8 @@ In the sandbox edition: A sandbox session lasts one hour and keeps nothing. Each
 
 | Task | Command |
 |---|---|
-| Create a project | Portal: Create, then the Create Project template for the ProjectType · API: `./onboard.sh TEAM PROJECT --apply` |
-| Create a service | Portal: Create, then the Create Component template for the ComponentType · API: `occ component scaffold` and `occ apply -f` |
+| Create a project | Portal: Create, the Project card, then the template for the ProjectType · API: `./onboard.sh TEAM PROJECT --apply` |
+| Create a service | Portal: Create, the Component card, then the template for the ComponentType · API: `occ component scaffold` and `occ apply -f` |
 | Team space | `./onboard.sh TEAM [--apply]`: namespace, environments and pipeline, no project |
 | Missing cells | `./scripts/bind-project.sh TEAM PROJECT`: one ProjectReleaseBinding per environment |
 | List | `occ namespace list` · `occ project list -n team-alpha` · `occ component list -n team-alpha` |

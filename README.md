@@ -91,7 +91,7 @@ The course runs on v1.3.2. Every row holds on v1.3.1 and v1.3.2. The labs alread
 | A new project gets no cell namespaces and nothing deploys into it | Cells come only from ProjectReleaseBindings; the portal wizard creates them, but a project applied with `kubectl` gets none | `scripts/bind-project.sh TEAM PROJECT`, Lab 3; `onboard.sh` creates them |
 | A new team namespace does not appear in `occ namespace list` or in the portal's wizards | It lacks the control-plane label | `openchoreo.dev/control-plane=true`, set by `onboard.sh`, Lab 3 step 2 |
 | `resourcequotas ... is forbidden` on a project binding | The cluster agent cannot manage ResourceQuotas on any install, out of the box | ClusterRole and binding for `cluster-agent-dataplane`, Lab 4 step 2 |
-| A new ProjectType has no wizard on the Create page | The portal refreshes on a schedule | Wait a minute and reload, Lab 4 step 3 |
+| A new ProjectType has no template under the Create page's Project card | The portal refreshes on a schedule | Wait a minute and reload, Lab 4 step 3 |
 | A component is created but not Ready | Most validation errors show in the object's status, not when it is created | `kubectl get component NAME -n NS -o jsonpath='{.status.conditions}'`, Lab 5 |
 | A project's type cannot be changed | The type is fixed when the project is created | Create a new project with the type, as Lab 4 does with `alpha-pilot` |
 | The portal import rejects the gist URL | The portal reads only hosts on its allow list | Use the raw URL; an administrator adds the host to `backend.reading.allow`, Lab 2 |

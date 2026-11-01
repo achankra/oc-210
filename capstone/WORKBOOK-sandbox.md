@@ -60,7 +60,7 @@ cd ~/oc-210-labs/lab3-onboard
 
 ### 3. Create beta-shop from the Starter tier wizard
 
-In your browser, open https://console.demo.openchoreo.wso2.com/create. Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Project template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-beta`, the project name `beta-shop` and the deployment pipeline `team-beta-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. If the console's Create page has no Create Project template for this type, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-beta beta-shop --project-type starter-tier --apply`.
+In your browser, open https://console.demo.openchoreo.wso2.com/create. Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Project** card (Browse project templates) and pick the template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-beta`, the project name `beta-shop` and the deployment pipeline `team-beta-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. If the console's Create page has no template for this type under the Project card, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-beta beta-shop --project-type starter-tier --apply`.
 
 ```bash
 cd ~/oc-210-labs/lab3-onboard
@@ -77,7 +77,7 @@ cd ~/oc-210-labs/lab3-onboard
 
 ### 5. Create, call and promote order-service
 
-Open https://console.demo.openchoreo.wso2.com/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Component template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
+Open https://console.demo.openchoreo.wso2.com/create, or choose **Create** in the left menu. Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Component** card (Browse component templates) and pick the template for the **Service** type: the portal generates one for each ComponentType the platform team publishes. Fill in these values, then choose **Create**. Field labels differ a little between portal versions; the values are what matter.
 
 | Field | Value |
 |---|---|
@@ -86,7 +86,7 @@ Open https://console.demo.openchoreo.wso2.com/create, or choose **Create** in th
 | Source | Deploy from a pre-built image: `ghcr.io/openchoreo/samples/greeter-service:latest` |
 | Endpoint | name `http`, type HTTP, port `9090`, visibility external |
 
-If the console has no Create Component template for the Service type, create the same component through the API instead: `~/oc-210-labs/lab5-scaffold/create-order-service.sh team-beta beta-shop release-v1.2`. Then log it, call it and promote it:
+If the console has no Service template under the Component card, create the same component through the API instead: `~/oc-210-labs/lab5-scaffold/create-order-service.sh team-beta beta-shop release-v1.2`. Then log it, call it and promote it:
 
 ```bash
 cd ~/oc-210-labs/lab3-onboard

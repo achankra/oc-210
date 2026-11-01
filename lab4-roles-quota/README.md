@@ -40,7 +40,7 @@ python3 build_starter_tier.py default.yaml starter-tier-quota.yaml > starter-tie
 kubectl apply -f starter-tier.yaml
 ```
 
-The cluster agent has to be allowed to manage ResourceQuotas first, on any install; the workbook's step 2 grants it. Once the type exists, the portal's Create page lists a Create Project template called **Starter tier**.
+The cluster agent has to be allowed to manage ResourceQuotas first, on any install; the workbook's step 2 grants it. Once the type exists, the portal's Create page lists a template called **Starter tier** under the **Project** card.
 
 ## Check the quota
 
@@ -68,13 +68,13 @@ The first form renders `rendered/team-alpha/role.yaml` and `binding.yaml` and ch
 
 ## What you should see
 
-- A Starter tier wizard on the portal's Create page.
+- A Starter tier template under the Project card on the portal's Create page.
 - Seven OK lines for the cell of `alpha-pilot`. A project on the default type prints `No ResourceQuota limits found`.
 - `occ authzrole list -n team-alpha` shows `team-developer`.
 
 ## If something fails
 
-- No Starter tier wizard: wait a minute and reload. Check the display name with `kubectl get clusterprojecttype starter-tier -o jsonpath='{.metadata.annotations}'`.
+- No Starter tier template under the Project card: wait a minute and reload. Check the display name with `kubectl get clusterprojecttype starter-tier -o jsonpath='{.metadata.annotations}'`.
 - `resourcequotas ... is forbidden`: the cluster agent grant in step 2 is missing.
 - Quota missing: confirm the project uses `starter-tier` (`kubectl get project alpha-pilot -n team-alpha -o jsonpath='{.spec.type}'`). A project's type cannot be changed after it is created.
 - Role rejected: compare field and action names with `kubectl get clusterauthzrole developer -o yaml`.

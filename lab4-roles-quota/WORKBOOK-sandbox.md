@@ -41,7 +41,7 @@ In a new session, the second block recreates team-alpha from Lab 3. Skip it if y
 kubectl get clusterprojecttypes
 ```
 
-In your browser, open https://console.demo.openchoreo.wso2.com/create. Sign in with `admin@openchoreo.dev` / `Admin@123`. The Create page shows one Create Project template for each ProjectType: today only the default one.
+In your browser, open https://console.demo.openchoreo.wso2.com/create. Sign in with `admin@openchoreo.dev` / `Admin@123`. On the Create page, open the **Project** card under Application Resources: it lists one template for each ProjectType, so today the default one, plus any types left from OC-201 on the same cluster, such as `governed`. The Platform Resources cards below create the types themselves; this lab does that with YAML.
 
 ## B. Publish the starter tier
 
@@ -96,13 +96,13 @@ kubectl apply -f starter-tier.yaml
 kubectl get clusterprojecttypes
 ```
 
-The list shows `default` and `starter-tier`. The cluster agent creates everything a project type renders, and on any install it cannot manage ResourceQuotas until you grant it; without the grant the cell fails with `resourcequotas ... is forbidden`. If `create` says `AlreadyExists`, the grant is already there.
+The list shows `default` and `starter-tier`, plus any types left from OC-201 on the same cluster, such as `governed`. The cluster agent creates everything a project type renders, and on any install it cannot manage ResourceQuotas until you grant it; without the grant the cell fails with `resourcequotas ... is forbidden`. If `create` says `AlreadyExists`, the grant is already there.
 
 ### 3. Find its wizard in the portal
 
 In your browser, open https://console.demo.openchoreo.wso2.com/create.
 
-A Create Project template for **Starter tier** is now listed, with the description you set. Nobody wrote a template: publishing the type is the whole job. If it is not there yet, wait a minute and reload.
+Open the **Project** card again: a template for **Starter tier** is now listed, with the description you set. Nobody wrote a template: publishing the type is the whole job. If it is not there yet, wait a minute and reload.
 
 ## C. The team uses it
 
@@ -110,7 +110,7 @@ A Create Project template for **Starter tier** is now listed, with the descripti
 
 In your browser, open https://console.demo.openchoreo.wso2.com/create.
 
-Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Pick the Create Project template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-alpha`, the project name `alpha-pilot` and the deployment pipeline `team-alpha-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. A project's type is fixed when it is created, which is why this is a new project rather than a change to `alpha-shop`. If the console's Create page has no Create Project template for this type, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-alpha alpha-pilot --project-type starter-tier --apply`.
+Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Project** card (Browse project templates) and pick the template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-alpha`, the project name `alpha-pilot` and the deployment pipeline `team-alpha-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. A project's type is fixed when it is created, which is why this is a new project rather than a change to `alpha-shop`. If the console's Create page has no template for this type under the Project card, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-alpha alpha-pilot --project-type starter-tier --apply`.
 
 ### 5. Check the quota in the cell
 
@@ -158,7 +158,7 @@ Members of `team-alpha-developers` can now deploy and debug in team-alpha, and s
 
 ## Troubleshooting
 
-- No Starter tier wizard: wait a minute and reload the Create page. Run `kubectl get clusterprojecttype starter-tier -o jsonpath='{.metadata.annotations}'` to check the display name.
+- No Starter tier template under the Project card: wait a minute and reload the Create page. Run `kubectl get clusterprojecttype starter-tier -o jsonpath='{.metadata.annotations}'` to check the display name.
 - `cell namespace:` prints nothing: the binding has not reconciled, or the wizard created none. Run `kubectl get projectreleasebindings -n team-alpha`; if `alpha-pilot` has none, run `../lab3-onboard/scripts/bind-project.sh team-alpha alpha-pilot`.
 - `resourcequotas ... is forbidden` on the project binding: run the grant lines of step 2, then `kubectl annotate projectreleasebinding alpha-pilot-development -n team-alpha lab/retry=$(date +%s) --overwrite`.
 - `No ResourceQuota limits found`: run `kubectl get project alpha-pilot -n team-alpha -o jsonpath='{.spec.type}'`; it must name `starter-tier`.
