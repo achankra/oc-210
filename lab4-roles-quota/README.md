@@ -71,6 +71,7 @@ The first form renders `rendered/team-alpha/role.yaml` and `binding.yaml` and ch
 - A Starter tier template under the Project card on the portal's Create page.
 - Seven OK lines for the cell of `alpha-pilot`. A project on the default type prints `No ResourceQuota limits found`.
 - `occ authzrole list -n team-alpha` shows `team-developer`.
+- Audit Logs in the portal's left menu shows the creation of `alpha-pilot` and the role and binding; `occ auditlogs --since 1h` shows the same entries.
 
 ## If something fails
 

@@ -150,11 +150,20 @@ occ authzrolebinding list -n team-alpha
 
 Members of `team-alpha-developers` can now deploy and debug in team-alpha, and see its projects in the portal. Users match on the `groups` claim; a pipeline or bot would be bound by its `client_id` instead. OC-201 Lab 2 covers the role model in depth.
 
+## E. See it in the audit log
+
+### 7. Find your changes in Audit Logs
+
+Choose **Audit Logs** in the portal's left menu. Find the entries for `team-alpha`: `alpha-pilot`, created from the wizard, and the role and binding that `apply-access.sh` created with `occ apply`. Each entry names who made the change, the action and whether it was allowed. The log records changes made through the OpenChoreo API, from the portal, `occ` or an agent. It does not record reads.
+
+The sandbox's occ is v1.2.0, which has no audit log command, so the console's Audit Logs page is the view here. This is where a platform team checks what changed, and where Module 6 looks for what an AI agent did.
+
 ## Checkpoint
 
 - [ ] `kubectl get clusterprojecttypes` shows `starter-tier`, and the portal lists a Starter tier wizard
 - [ ] `alpha-pilot`, created from that wizard, has a cell with seven OK lines from `check_quota.py`
 - [ ] `occ authzrole list -n team-alpha` shows `team-developer`
+- [ ] Audit Logs in the portal shows the creation of `alpha-pilot` and the role and binding
 
 ## Troubleshooting
 

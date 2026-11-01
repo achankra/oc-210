@@ -62,10 +62,10 @@ Write evidence you could point at: a tab you opened, a page that was empty, a co
 | Service catalog and ownership | One source of truth for what exists and which team owns it | Is ownership explicit? | The catalog: Domain, System and Component entities, and their owner field |
 | Golden paths and scaffolding | Opinionated templates for starting new services | Can you create a service without tribal knowledge? | The Create page: one wizard per ProjectType and per ComponentType |
 | Operations and reliability | Deployment health, runbooks, SLOs and incidents | Are health and runbooks visible? | The component's deployment view, logs and shell |
-| Security and governance | Access control, policy enforcement and an audit trail | Can security audit through the portal? | Access control; `occ auditlogs` for the audit trail |
+| Security and governance | Access control, policy enforcement and an audit trail | Can security audit through the portal? | Access control, and Audit Logs in the left menu |
 | Observability and telemetry | Logs, metrics and traces for each service | Is each service linked to its signals? | The component's logs, metrics and traces tabs |
-| Insights and AI augmentation | Engineering analytics and AI assistants | Is there analytics and automation? | Any analytics pages; the built-in agents (off by default) |
+| Insights and AI augmentation | Engineering analytics and AI assistants | Is there analytics and automation? | Cost Insights in the left menu; the built-in agents (off by default) |
 
 ## Reference answer
 
-`sample-scorecard.csv` is what a default local install of v1.3.2 typically scores: 12 out of 18. The weakest plane is insights and AI augmentation, because there are no engineering analytics and the SRE and FinOps agents are off by default. Observability is the strongest, because the pre-work installed the observability plane. The rest score 2: they work for the common case and leave a clear next step (owners on every entry, a template library, runbooks, an audit view in the portal). The weakest two planes are where a portal team would put its next effort.
+`sample-scorecard.csv` is what a default local install of v1.3.2 typically scores: 13 out of 18. The weakest plane is insights and AI augmentation: the Cost Insights page needs a FinOps module to show data, there are no engineering analytics, and the SRE and FinOps agents are off by default. Observability and security are the strongest, because the pre-work installed the observability plane and the portal has its own Audit Logs page. The rest score 2: they work for the common case and leave a clear next step (owners on every entry, a template library, runbooks). The weakest two planes are where a portal team would put its next effort.

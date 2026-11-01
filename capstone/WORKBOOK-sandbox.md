@@ -131,11 +131,18 @@ Copy the numbers into the scorecard table. The time between two logged rows coun
 
 The metrics and the seven-minute friction threshold come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 7. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
+### 8. Check the audit trail
+
+The clock has stopped. Choose **Audit Logs** in the portal's left menu and find team-beta's changes: the environments and pipeline that `onboard.sh` applied with `occ`, `beta-shop` from the wizard, the role and binding, `order-service`, and its promotion to staging. Each entry names who made the change and whether it was allowed.
+
+One change is missing: the namespace. `onboard.sh` creates it with `kubectl`, which does not go through the OpenChoreo API, so the audit log never sees it. Anything a team should be able to audit has to go through the API: the portal, `occ`, or an agent through MCP.
+
 ## Checkpoint
 
 - [ ] team-beta has a running, reachable service, created through the portal
 - [ ] The catalog shows it with an owner
 - [ ] Your time is under 15 minutes, or you can name the slow step
+- [ ] Audit Logs shows team-beta's changes, and you can say why the namespace is not among them
 
 ## Troubleshooting
 

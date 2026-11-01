@@ -114,7 +114,7 @@ cd ~/oc-210-labs/lab1-portal-scorecard
 python3 scorecard.py my-scorecard.csv
 ```
 
-The program lists problems if a plane is missing, a score is outside 0 to 3, or an evidence sentence is empty. It prints the total out of 18 and your two weakest planes. Then compare with `sample-scorecard.csv`, a reference answer for the default local install (12 out of 18). Different scores are fine when your evidence supports them.
+The program lists problems if a plane is missing, a score is outside 0 to 3, or an evidence sentence is empty. It prints the total out of 18 and your two weakest planes. Then compare with `sample-scorecard.csv`, a reference answer for the default local install (13 out of 18). Different scores are fine when your evidence supports them.
 
 ## Checkpoint
 

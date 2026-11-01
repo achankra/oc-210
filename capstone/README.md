@@ -60,6 +60,12 @@ The time between two rows counts against the later step, so time spent in a port
 
 team-beta has a running, reachable service, created through the portal. The catalog shows it with an owner, and the cell has the starter-tier quota. Your time is under 15 minutes, or you can name the step that made it longer.
 
+After the clock stops, Audit Logs in the portal shows team-beta's changes made through the OpenChoreo API: the environments, pipeline, project, role, binding, component and promotion. The namespace is not there, because `onboard.sh` creates it with `kubectl`, outside the API.
+
 ## How it maps to OpenChoreo
 
 The three leading metrics in the Handbook are time-to-first-deploy, tickets during onboarding and abandonment. This lab measures the first two on a real onboarding. The third is what the first two predict: a developer who waits more than about seven minutes for one step starts looking for a workaround. The metrics and the seven-minute threshold come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 7. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+
+## What next
+
+The labs used one path through the portal. [After the course: the rest of the portal](../README.md#after-the-course-the-rest-of-the-portal) in the top-level README lists the parts you have not used yet, with something to try in each.

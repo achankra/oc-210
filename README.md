@@ -108,6 +108,30 @@ source .venv/bin/activate
 
 It confirms every file the workbooks use is here and the links between them work, that the scripts parse, and that the Python programs, templates and the Lab 4 quota edit give the results the workbooks describe. It ends with `N passed, 0 failed`. The steps that need the cluster are tested by running the workbook itself.
 
+## After the course: the rest of the portal
+
+The labs follow one path through the portal: the catalog, the Create page's Project and Component cards, a component's own pages, promotion, and Audit Logs (Lab 4 and the capstone). The course leaves the rest of the portal out on purpose, to keep the onboarding path in focus. On the cluster you already have, each of these takes a few minutes and needs nothing new installed unless the row says so.
+
+| In the portal | What to try | Why it matters |
+|---|---|---|
+| **APIs**, left menu | See whether the endpoints of `order-service` and `greeter-service` are listed | Teams find a service by the API it offers, not by asking around |
+| **Platform**, left menu | See what the platform team's view shows: planes, environments and pipelines | The parts teams build on, which the labs created from the terminal |
+| **Create**, Resource card | See which managed resources the platform offers through ResourceTypes | Databases, queues and caches as self-service, the next thing a team asks for after a service |
+| **Create**, Platform Resources | Open the Environment, Deployment Pipeline and Notification Channel forms and read them; there is no need to submit | The same objects `onboard.sh` creates, as forms a platform admin can use |
+| **Create**, Component card | Create a component that builds from source instead of a pre-built image | The build runs as a Workflow on the workflow plane; Lab 5 used an image to save time |
+| **Cost Insights**, left menu | Open it | It needs a FinOps module such as OpenCost before it shows data; that gap is itself a lesson about enabling only what the platform backs |
+| An AI agent | Connect one to the control plane and observability MCP servers, as OC-201 Lab 4 does, and ask it to onboard `team-gamma` | An agent is one more client of the same API, under the same roles, and its changes appear in Audit Logs, as yours did in the capstone |
+
+Then score the portal again with the Lab 1 worksheet and compare it with your first score. The planes that moved are the ones you now know how to use; the ones that did not are where a portal team would invest next.
+
+Where to go deeper:
+
+- OpenChoreo documentation: [openchoreo.dev](https://openchoreo.dev)
+- OC-201, Cloud Native Platform Engineering with OpenChoreo, if you have not taken it: it builds the platform this course puts a portal on, including governed cells, ComponentTypes and Traits, and agents through MCP
+- The Platform Engineer's Handbook (see [About the book](#about-the-book))
+
+When you are done, `k3d cluster stop openchoreo` frees the memory and keeps everything; `k3d cluster delete openchoreo` removes the cluster.
+
 ## About the book
 
 Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025): the six evaluation planes for a portal (Lab 1, from Chapter 6, Table 6.1), the catalog-info example (Lab 2), the `team-{teamname}` naming convention (Lab 3), the starter-tier quota and team roles (Lab 4), and the onboarding metrics and seven-minute friction threshold (capstone, from Chapter 7). Each place in the workbooks and READMEs names the source. Everything a lab needs is in this repository, so the book is not mandatory, but we recommend getting it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
