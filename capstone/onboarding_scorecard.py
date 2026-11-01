@@ -10,6 +10,9 @@ step named on the later row.
 
 Prints time-to-first-deploy, the commands run, tickets, the time per step, the
 slowest step, and whether each Handbook threshold was met.
+The metrics and thresholds come from The Platform Engineer's Handbook (Packt, 2025),
+Chapter 7. The book is not required for the course; we recommend it:
+https://peh-packt.platformetrics.com
 """
 import csv
 import sys

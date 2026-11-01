@@ -63,7 +63,7 @@ In the sandbox edition: A sandbox session lasts one hour and keeps nothing. Each
 
 | Handbook idea | OpenChoreo counterpart |
 |---|---|
-| Six evaluation planes (Table 6.1) | Portal tabs and catalog (Lab 1) |
+| Six evaluation planes for a portal | Portal tabs and catalog (Lab 1) |
 | Catalog owner and lifecycle | Generated Domain, System and Component entities; catalog-info for the rest (Lab 2) |
 | Self-service onboarding on an API | Create Project wizard in the portal; the same Project and bindings through occ or a script (Lab 3) |
 | Namespace, RBAC, quota templates | A ProjectType with a quota, published as a portal wizard; AuthzRole and binding (Lab 4) |
@@ -71,4 +71,4 @@ In the sandbox edition: A sandbox session lasts one hour and keeps nothing. Each
 | Seven-minute rule; time-to-first-deploy | Capstone scorecard |
 
 
-Sources: OpenChoreo v1.3 documentation (openchoreo.dev); CNCF project page; The Platform Engineer's Handbook, Chapter 6 (developer portals) and Chapter 7 (self-service onboarding).
+Sources: OpenChoreo v1.3 documentation (openchoreo.dev); CNCF project page; The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 6 (developer portals) and Chapter 7 (self-service onboarding). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).

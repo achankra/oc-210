@@ -9,7 +9,7 @@
 | Docker | v26+, 8 GB RAM and 4 CPUs for the VM | `docker info` |
 | k3d | v5.8+ | `k3d version` |
 | kubectl | v1.34+ | `kubectl version --client` |
-| Helm | v3.12+ | `helm version` |
+| Helm | v3.12+ or v4 | `helm version` |
 | occ | v1.3.2 | `occ version` |
 | Git | any recent version | `git --version` |
 | Python | 3.9+ | `python3 --version` |
@@ -259,10 +259,10 @@ python3 -c "import yaml; print('pyyaml ok')"
 
 In each new terminal, run `source ~/oc-210-labs/.venv/bin/activate` before the Python programs. If you already have the repository somewhere else, link it instead of cloning, so every path in the labs works: `ln -s "/path/to/oc-210-labs" ~/oc-210-labs`.
 
-### 9. Pre-read
+### 9. Optional reading
 
-- Handbook Chapter 6, section 6.1: the evaluation framework and Table 6.1
-- Handbook Chapter 7, the sidebar “The onboarding opportunity”
+- Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). Each place says so, and the workbook gives you everything the lab needs.
+- While the book is not mandatory, we recommend getting it: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2). Start with Chapter 6, section 6.1 (how to evaluate a portal) and the Chapter 7 sidebar “The onboarding opportunity”.
 
 ## Checkpoint
 
@@ -278,12 +278,14 @@ In each new terminal, run `source ~/oc-210-labs/.venv/bin/activate` before the P
 - `k3d cluster list` is empty: the install did not finish. On a Mac with Colima, run `export K3D_FIX_DNS=0`; then run the install block again. If it stops with an error, read its last lines; usually Docker memory or no network.
 - `The connection to the server 127.0.0.1 was refused`: the cluster stopped. Start Docker again (Mac: the `colima start` line; Linux: `sudo systemctl start docker`; Windows: open Docker Desktop), then `k3d cluster start openchoreo`, then `kubectl get nodes`.
 - `Cannot connect to the Docker daemon`: run Start Docker again.
+- Portal sign-in fails with `Authentication failed, Failed to obtain access token` after Docker or Colima restarted: CoreDNS lost the `host.k3d.internal` entry that k3d adds when it starts the cluster, so the portal cannot reach the identity provider. Run `k3d cluster stop openchoreo`, then `k3d cluster start openchoreo`, and sign in again in a private window. After any restart, start the cluster with `k3d cluster start openchoreo`; the repository README has the checks.
 - Pods stuck Pending or restarting: raise Docker memory to at least 8 GB and restart Colima or Docker Desktop. On Linux, check free memory with `free -g`.
 - `*.openchoreo.localhost` does not resolve: run `echo '127.0.0.1 openchoreo.localhost api.openchoreo.localhost thunder.openchoreo.localhost observer.openchoreo.localhost' | sudo tee -a /etc/hosts`.
 - `externally-managed-environment` from pip: run `source ~/oc-210-labs/.venv/bin/activate` first.
 - Windows: `docker: command not found` in Ubuntu: turn on WSL integration for Ubuntu in Docker Desktop, then open a new Ubuntu terminal.
 - Linux: `permission denied` on the Docker socket: log out and in once after `sudo usermod -aG docker $USER`.
 - `Bind for 0.0.0.0:8080 failed: port is already allocated`: find the owner with `docker ps` and `lsof -nP -iTCP:8080 -sTCP:LISTEN`, stop it, then run the install again.
+- Running the install again stops with `UPGRADE FAILED: conflict occurred while applying object openchoreo-control-plane/cluster-gateway-ca`: this happens with Helm 4, which Homebrew installs. Run `kubectl delete configmap cluster-gateway-ca -n openchoreo-control-plane`, then run the install again. The control plane does not need that ConfigMap after the first install.
 
 ---
 

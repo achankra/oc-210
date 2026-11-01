@@ -1,7 +1,7 @@
 plane,score,evidence
-Service catalog and ownership,2,Projects and components appear as System and Component entities; owners are not shown on every entry
-Golden paths and scaffolding,1,The portal wizard creates components but offers no template library yet
-Operations and reliability,2,Logs and deployments are linked from the component page; no runbooks
-Security and governance,2,Access control tab present; audit trail is in the CLI rather than the portal
-Observability and telemetry,3,Logs metrics and traces open from the component
-Insights and AI augmentation,1,Basic dashboards exist; no engineering analytics
+Service catalog and ownership,2,The default namespace project and greeter-service appear as Domain System and Component entities without anyone writing catalog files; not every entry names an owning team
+Golden paths and scaffolding,2,The Create page has a Create Project wizard and a Create Component wizard for each ComponentType (service web-application scheduled-task worker); there is no per-language template library
+Operations and reliability,2,The component page shows deployments per environment and logs and opens a shell into a running instance; no runbooks or SLOs are attached
+Security and governance,2,Access control shows roles and bindings; the audit trail of changes is read with occ auditlogs rather than in the portal
+Observability and telemetry,3,Logs metrics and traces open from the component page through the observability plane the pre-work installed
+Insights and AI augmentation,1,No engineering analytics in the default install; the SRE and FinOps agents are off by default

@@ -52,7 +52,9 @@ Note which fields the platform filled in (system, owner, type, lifecycle) and wh
 
 ### 3. Fill in the catalog-info file
 
-Some things a team owns are not run by the platform, such as a documentation site. `catalog/pilot-docs-site.yaml` follows the Handbook example: a Component with tags, a link, and a spec that names type, lifecycle and owner. The owner must be a group that exists in the catalog: in the portal catalog, set the Kind filter to Group and pick one. Put its name on the first line, then paste the rest.
+Some things a team owns are not run by the platform, such as a documentation site. `catalog/pilot-docs-site.yaml` follows the catalog-info example in The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025): a Component with tags, a link, and a spec that names type, lifecycle and owner. The owner must be a group that exists in the catalog: in the portal catalog, set the Kind filter to Group and pick one. Put its name on the first line, then paste the rest.
+
+The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 ```bash
 GROUP=name-of-a-group-from-the-portal
@@ -147,7 +149,7 @@ It prints yes or NO for each item and the percentage of checks passed. `orphan-s
 ## Troubleshooting
 
 - Import fails: the URL must be the raw file URL and reachable from the portal. If the portal says it is not allowed to read that host, the portal's `backend.reading.allow` list needs it.
-- Owner shows as unknown: the group does not exist in the catalog. Pick a name from the Group filter (Handbook section 6.2) and repeat step 3.
+- Owner shows as unknown: the group does not exist in the catalog. Pick a name from the Group filter and repeat step 3.
 - No **Inspect entity** in the menu: open the entity's page, then the three-dot menu at the top right. Some portal versions call it View YAML.
 - Entities missing: wait a minute; the catalog refreshes on a schedule.
 

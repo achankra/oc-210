@@ -129,6 +129,8 @@ python3 ../capstone/onboarding_scorecard.py onboarding-log.csv --tickets 0
 
 Copy the numbers into the scorecard table. The time between two logged rows counts against the later step, so time spent in the portal counts against the step you log after it.
 
+The metrics and the seven-minute friction threshold come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 7. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+
 ## Checkpoint
 
 - [ ] team-beta has a running, reachable service, created through the portal

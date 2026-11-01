@@ -1,6 +1,6 @@
 # Lab 4: publish a project type as a portal wizard
 
-In Lab 4 the platform team publishes a starter-tier ProjectType with the Handbook's quota. The portal turns it into a Create Project wizard, with no template to write. The team creates `alpha-pilot` from that wizard, and its cells get the quota. Then the team's developers get access through a role and a binding. This folder holds the quota, the edit that builds the type, the access templates, and a program that checks the quota in a cell.
+In Lab 4 the platform team publishes a starter-tier ProjectType with the Handbook's quota. The portal turns it into a Create Project wizard, with no template to write. The team creates `alpha-pilot` from that wizard, and its cells get the quota. Then the team's developers get access through a role and a binding. This folder holds the quota, the edit that builds the type, the access templates, and a program that checks the quota in a cell. The starter-tier values come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 | Path | Purpose |
 |---|---|

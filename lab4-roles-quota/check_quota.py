@@ -9,6 +9,8 @@ Usage:
 The input is the JSON from kubectl get resourcequota -o json. Limits from every
 quota in the list are merged. --expect names a JSON file that maps quota keys to
 values; without it the Handbook's starter tier is used.
+The starter tier comes from The Platform Engineer's Handbook (Packt, 2025). The book is
+not required for the course; we recommend it: https://peh-packt.platformetrics.com
 Exit status: 0 when every expected key matches, 1 when one is missing or differs.
 """
 import json

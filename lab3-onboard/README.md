@@ -90,4 +90,4 @@ Every command from an `--apply` run is written to `onboarding-log.csv`, with the
 
 ## How it maps to OpenChoreo
 
-The Handbook builds an onboarding API and puts the portal on top of it. In OpenChoreo both already exist: the platform team publishes ProjectTypes, the portal generates a Create Project wizard for each, and the wizard, `occ` and this script are all clients of the same API.
+The Handbook builds an onboarding API and puts the portal on top of it. In OpenChoreo both already exist: the platform team publishes ProjectTypes, the portal generates a Create Project wizard for each, and the wizard, `occ` and this script are all clients of the same API. The Handbook is The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).

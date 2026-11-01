@@ -65,16 +65,18 @@ List which of these you can see for the component: logs, metrics, traces, builds
 
 ### 5. Fill in the six-plane worksheet
 
-Score each plane from 0 (absent) to 3 (strong) and write one sentence of evidence. Table 6.1 of the Handbook defines the planes.
+Score each plane from 0 (absent) to 3 (strong) and write one sentence of evidence: something you opened, saw or could not find. The second column says what each plane covers; the third is the question to answer. 0 means you cannot find it, 1 present but thin, 2 works for the common case, 3 you would show it to a new team.
 
-| Plane | Key Question | Score 0-3 | Evidence |
-|---|---|---|---|
-| Service catalog and ownership | Is ownership explicit? |  |  |
-| Golden paths and scaffolding | Create a service without tribal knowledge? |  |  |
-| Operations and reliability | Health and runbooks visible? |  |  |
-| Security and governance | Can security audit through the portal? |  |  |
-| Observability and telemetry | Linked to dashboards? |  |  |
-| Insights and AI augmentation | Analytics and automation? |  |  |
+The six planes and their key questions come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 6, Table 6.1. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+
+| Plane | What It Covers | Key Question | Score 0-3 | Evidence |
+|---|---|---|---|---|
+| Service catalog and ownership | One source of truth for what exists and which team owns it | Is ownership explicit? |  |  |
+| Golden paths and scaffolding | Opinionated templates for starting new services | Can you create a service without tribal knowledge? |  |  |
+| Operations and reliability | Deployment health, runbooks, SLOs and incidents | Are health and runbooks visible? |  |  |
+| Security and governance | Access control, policy enforcement and an audit trail | Can security audit through the portal? |  |  |
+| Observability and telemetry | Logs, metrics and traces for each service | Is each service linked to its signals? |  |  |
+| Insights and AI augmentation | Engineering analytics and AI assistants | Is there analytics and automation? |  |  |
 
 ### 6. Check the scorecard with the program
 
@@ -112,7 +114,7 @@ cd ~/oc-210-labs/lab1-portal-scorecard
 python3 scorecard.py my-scorecard.csv
 ```
 
-The program lists problems if a plane is missing, a score is outside 0 to 3, or an evidence sentence is empty. It prints the total out of 18 and your two weakest planes.
+The program lists problems if a plane is missing, a score is outside 0 to 3, or an evidence sentence is empty. It prints the total out of 18 and your two weakest planes. Then compare with `sample-scorecard.csv`, a reference answer for the default local install (12 out of 18). Different scores are fine when your evidence supports them.
 
 ## Checkpoint
 

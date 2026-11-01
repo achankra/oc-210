@@ -57,10 +57,10 @@ curl -s -o /dev/null -w "%{http_code}\n" -H "Host: $DEVHOST" http://$GWADDR/
 
 In your browser, open https://console.demo.openchoreo.wso2.com and sign in with `admin@openchoreo.dev` / `Admin@123`.
 
-### 5. Pre-read
+### 5. Optional reading
 
-- Handbook Chapter 6, section 6.1: the evaluation framework and Table 6.1
-- Handbook Chapter 7, the sidebar “The onboarding opportunity”
+- Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). Each place says so, and the workbook gives you everything the lab needs.
+- While the book is not mandatory, we recommend getting it: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2). Start with Chapter 6, section 6.1 (how to evaluate a portal) and the Chapter 7 sidebar “The onboarding opportunity”.
 
 ## Checkpoint
 

@@ -1,5 +1,7 @@
-# The ResourceQuota to add to your starter-tier ProjectType, using the Handbook's
-# starter tier. In the ProjectType it becomes a new entry in the resources list,
+# The ResourceQuota to add to your starter-tier ProjectType, using the starter tier
+# from The Platform Engineer's Handbook (Packt, 2025). The book is not required for
+# the course; we recommend it: https://peh-packt.platformetrics.com
+# In the ProjectType it becomes a new entry in the resources list,
 # in the same id and template shape as the existing Namespace entry.
 #
 # Set metadata.namespace with the same expression the Namespace entry uses for the

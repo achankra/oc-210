@@ -77,7 +77,7 @@ The control plane does not need this copy after the first install, and the insta
 kubectl get configmap -A | grep cluster-gateway-ca
 ```
 
-It lists the data, workflow and observability plane namespaces. The pre-work asks for Helm v3 (`helm version --short`); with Helm 4, delete the ConfigMap before each re-run.
+It lists the data, workflow and observability plane namespaces. The conflict comes from Helm 4, which Homebrew installs (`helm version --short`); with Helm 4, delete the ConfigMap before each re-run.
 
 ## Known issues on v1.3
 
@@ -107,6 +107,10 @@ source .venv/bin/activate
 ```
 
 It confirms every file the workbooks use is here and the links between them work, that the scripts parse, and that the Python programs, templates and the Lab 4 quota edit give the results the workbooks describe. It ends with `N passed, 0 failed`. The steps that need the cluster are tested by running the workbook itself.
+
+## About the book
+
+Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025): the six evaluation planes for a portal (Lab 1, from Chapter 6, Table 6.1), the catalog-info example (Lab 2), the `team-{teamname}` naming convention (Lab 3), the starter-tier quota and team roles (Lab 4), and the onboarding metrics and seven-minute friction threshold (capstone, from Chapter 7). Each place in the workbooks and READMEs names the source. Everything a lab needs is in this repository, so the book is not mandatory, but we recommend getting it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 ## Good to know
 
