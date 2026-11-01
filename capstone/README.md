@@ -64,7 +64,7 @@ After the clock stops, Audit Logs in the portal shows team-beta's changes made t
 
 ## How it maps to OpenChoreo
 
-The three leading metrics in the Handbook are time-to-first-deploy, tickets during onboarding and abandonment. This lab measures the first two on a real onboarding. The third is what the first two predict: a developer who waits more than about seven minutes for one step starts looking for a workaround. The metrics and the seven-minute threshold come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 7. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+The three leading metrics in the Handbook are time-to-first-deploy, tickets during onboarding and abandonment. This lab measures the first two on a real onboarding. The third is what the first two predict: a developer who waits more than about seven minutes for one step starts looking for a workaround. The metrics and the seven-minute threshold come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026), Chapter 7. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 ## What next
 

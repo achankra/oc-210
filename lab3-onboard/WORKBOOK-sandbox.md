@@ -45,7 +45,7 @@ The first `mark.sh` call creates the log and starts the clock. Each step below e
 
 > **Dry run first:** the block checks with a server-side dry run before it changes anything.
 
-A team space is what the platform team owns: a namespace with the control-plane, owner and tier labels (the `team-{teamname}` convention from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025)), development and staging environments on the cluster's data plane, and a pipeline that promotes development to staging. The script checks first; `--apply` creates them and logs each command.
+A team space is what the platform team owns: a namespace with the control-plane, owner and tier labels (the `team-{teamname}` convention from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026)), development and staging environments on the cluster's data plane, and a pipeline that promotes development to staging. The script checks first; `--apply` creates them and logs each command.
 
 The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 

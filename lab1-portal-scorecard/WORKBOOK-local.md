@@ -67,7 +67,7 @@ List which of these you can see for the component: logs, metrics, traces, builds
 
 Score each plane from 0 (absent) to 3 (strong) and write one sentence of evidence: something you opened, saw or could not find. The second column says what each plane covers; the third is the question to answer. 0 means you cannot find it, 1 present but thin, 2 works for the common case, 3 you would show it to a new team.
 
-The six planes and their key questions come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 6, Table 6.1. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+The six planes and their key questions come from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026), Chapter 6, Table 6.1. The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 | Plane | What It Covers | Key Question | Score 0-3 | Evidence |
 |---|---|---|---|---|

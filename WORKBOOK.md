@@ -71,4 +71,4 @@ In the sandbox edition: A sandbox session lasts one hour and keeps nothing. Each
 | Seven-minute rule; time-to-first-deploy | Capstone scorecard |
 
 
-Sources: OpenChoreo v1.3 documentation (openchoreo.dev); CNCF project page; The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025), Chapter 6 (developer portals) and Chapter 7 (self-service onboarding). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+Sources: OpenChoreo v1.3 documentation (openchoreo.dev); CNCF project page; The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026), Chapter 6 (developer portals) and Chapter 7 (self-service onboarding). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).

@@ -134,7 +134,7 @@ When you are done, `k3d cluster stop openchoreo` frees the memory and keeps ever
 
 ## About the book
 
-Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025): the six evaluation planes for a portal (Lab 1, from Chapter 6, Table 6.1), the catalog-info example (Lab 2), the `team-{teamname}` naming convention (Lab 3), the starter-tier quota and team roles (Lab 4), and the onboarding metrics and seven-minute friction threshold (capstone, from Chapter 7). Each place in the workbooks and READMEs names the source. Everything a lab needs is in this repository, so the book is not mandatory, but we recommend getting it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026): the six evaluation planes for a portal (Lab 1, from Chapter 6, Table 6.1), the catalog-info example (Lab 2), the `team-{teamname}` naming convention (Lab 3), the starter-tier quota and team roles (Lab 4), and the onboarding metrics and seven-minute friction threshold (capstone, from Chapter 7). Each place in the workbooks and READMEs names the source. Everything a lab needs is in this repository, so the book is not mandatory, but we recommend getting it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 ## Good to know
 

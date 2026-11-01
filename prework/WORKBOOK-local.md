@@ -261,7 +261,7 @@ In each new terminal, run `source ~/oc-210-labs/.venv/bin/activate` before the P
 
 ### 9. Optional reading
 
-- Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). Each place says so, and the workbook gives you everything the lab needs.
+- Several labs use ideas and numbers from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026). Each place says so, and the workbook gives you everything the lab needs.
 - While the book is not mandatory, we recommend getting it: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2). Start with Chapter 6, section 6.1 (how to evaluate a portal) and the Chapter 7 sidebar “The onboarding opportunity”.
 
 ## Checkpoint

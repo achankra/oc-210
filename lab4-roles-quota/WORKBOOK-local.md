@@ -38,7 +38,7 @@ Sign in with `admin@openchoreo.dev` / `Admin@123`. On the Create page, open the 
 
 > **Dry run first:** the block checks with a server-side dry run before it changes anything.
 
-Export the default type. One Python command renames it `starter-tier`, gives it the display name and description the portal shows on its wizard, strips the server-added fields, and adds the ResourceQuota from `starter-tier-quota.yaml` to the cell namespace. The quota values are the starter tier from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2025). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
+Export the default type. One Python command renames it `starter-tier`, gives it the display name and description the portal shows on its wizard, strips the server-added fields, and adds the ResourceQuota from `starter-tier-quota.yaml` to the cell namespace. The quota values are the starter tier from The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026). The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 | Quota Key (Handbook Starter Tier) | Value |
 |---|---|
