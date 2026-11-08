@@ -108,9 +108,12 @@ Open the **Project** card again: a template for **Starter tier** is now listed, 
 
 ### 4. Create alpha-pilot from the Starter tier wizard
 
-In your browser, open https://console.demo.openchoreo.wso2.com/create.
+In your browser, open https://console.demo.openchoreo.wso2.com/create. Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Project** card (Browse project templates) and pick the template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-alpha`, the project name `alpha-pilot` and the deployment pipeline `team-alpha-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. A project's type is fixed when it is created, which is why this is a new project rather than a change to `alpha-shop`. Then give it the team's group as owner, as in Lab 3: If the console's Create page has no template for this type under the Project card, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-alpha alpha-pilot --project-type starter-tier --apply`.
 
-Choose **Create** in the left menu (or https://console.demo.openchoreo.wso2.com/create). Sign in with `admin@openchoreo.dev` / `Admin@123`. Under Application Resources, open the **Project** card (Browse project templates) and pick the template for **Starter tier**: the portal generates one for each ProjectType the platform team publishes. Fill in the namespace `team-alpha`, the project name `alpha-pilot` and the deployment pipeline `team-alpha-deployment-pipeline`, then choose **Create**. Field labels differ a little between portal versions; these three values are what matter. A project's type is fixed when it is created, which is why this is a new project rather than a change to `alpha-shop`. If the console's Create page has no template for this type under the Project card, the sandbox's version predates the generated wizards. Create the same project through the API instead: `cd ~/oc-210-labs/lab3-onboard && ./onboard.sh team-alpha alpha-pilot --project-type starter-tier --apply`.
+```bash
+cd ~/oc-210-labs/lab3-onboard
+./set-owner.sh team-alpha alpha-pilot --apply
+```
 
 ### 5. Check the quota in the cell
 

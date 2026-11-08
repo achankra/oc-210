@@ -86,6 +86,7 @@ The course runs on v1.3.2. Every row holds on v1.3.1 and v1.3.2. The labs alread
 | Symptom | Cause | Fix, and where |
 |---|---|---|
 | Portal sign-in fails with `Failed to obtain access token` after a Docker or Colima restart | CoreDNS lost the `host.k3d.internal` entry, so the portal cannot reach the identity provider | `k3d cluster stop openchoreo`, then `k3d cluster start openchoreo`; see [When sign-in or the installer fails](#when-sign-in-or-the-installer-fails) |
+| Every entity the platform generates shows the owner `openchoreo-users` | That is the portal's default until the project or component has a `backstage.io/owner` annotation | `./set-owner.sh TEAM PROJECT --apply` with `group:default/TEAM`, Lab 3; `onboard.sh TEAM PROJECT` sets it for you |
 | Re-running the installer fails with `UPGRADE FAILED: conflict ... cluster-gateway-ca` | An earlier `kubectl apply` owns the ConfigMap's `ca.crt`, and Helm 4 will not overwrite it | Delete the ConfigMap and re-run the installer; the planes keep their own copies; see [When sign-in or the installer fails](#when-sign-in-or-the-installer-fails) |
 | zsh runs `#` lines as commands | Comments are off in interactive zsh | `setopt interactivecomments`, pre-work |
 | A new project gets no cell namespaces and nothing deploys into it | Cells come only from ProjectReleaseBindings; the portal wizard creates them, but a project applied with `kubectl` gets none | `scripts/bind-project.sh TEAM PROJECT`, Lab 3; `onboard.sh` creates them |

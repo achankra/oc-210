@@ -20,11 +20,11 @@ The capstone writes its log in `~/oc-210-labs/lab3-onboard`, so the scripts and 
 
 | Step | What | Where |
 |---|---|---|
-| 1 | Team space: namespace, environments, pipeline | `onboard.sh team-beta --apply` |
-| 2 | Project `beta-shop` from the Starter tier wizard | Portal |
+| 1 | Team space: namespace, environments, pipeline, the team's group | `onboard.sh team-beta --apply` |
+| 2 | Project `beta-shop` from the Starter tier wizard, then its owner | Portal, then `set-owner.sh team-beta beta-shop --apply` |
 | 3 | Role and binding for `team-beta-developers` | `apply-access.sh team-beta --apply` |
 | 4 | `order-service` from the Service wizard, deployed and promoted | Portal, then `occ` |
-| 5 | Catalog entry, owner and quota | Portal and `check_quota.py` |
+| 5 | Catalog entry owned by `team-beta`, and the quota | Portal and `check_quota.py` |
 
 Log every portal step with `../lab3-onboard/scripts/mark.sh "step name" "what you did"`, so the timing counts it.
 
@@ -58,9 +58,9 @@ The time between two rows counts against the later step, so time spent in a port
 
 ## What you should see
 
-team-beta has a running, reachable service, created through the portal. The catalog shows it with an owner, and the cell has the starter-tier quota. Your time is under 15 minutes, or you can name the step that made it longer.
+team-beta has a running, reachable service, created through the portal. The catalog shows `team-beta` as its owner, not the default `openchoreo-users`, and the cell has the starter-tier quota. Your time is under 15 minutes, or you can name the step that made it longer.
 
-After the clock stops, Audit Logs in the portal shows team-beta's changes made through the OpenChoreo API: the environments, pipeline, project, role, binding, component and promotion. The namespace is not there, because `onboard.sh` creates it with `kubectl`, outside the API.
+After the clock stops, Audit Logs in the portal shows team-beta's changes made through the OpenChoreo API: the environments, pipeline, project, role, binding, component and promotion. The namespace and the owner annotation are not there, because `onboard.sh` and `set-owner.sh` make them with `kubectl`, outside the API.
 
 ## How it maps to OpenChoreo
 

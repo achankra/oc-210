@@ -2,7 +2,7 @@
 
 *OC-210 workbook, local install edition (OpenChoreo v1.3.2 on k3d). Using the WSO2 sandbox instead? See [WORKBOOK-sandbox.md](WORKBOOK-sandbox.md).*
 
-**Goal:** See how the portal builds the catalog from what the platform runs, read an entity it generated, register one extra entry with an explicit owner, and check every entry for completeness.
+**Goal:** See how the portal builds the catalog from what the platform runs, read an entity it generated, give the generated entries a real owner, register one extra entry with an explicit owner, and check every entry for completeness.
 
 ## A. The catalog the platform generates
 
@@ -46,18 +46,30 @@ Sign in with `admin@openchoreo.dev` / `Admin@123`. Find the entity for the names
 
 Open `greeter-service` in the catalog. In the menu at the top right of its page, choose **Inspect entity** and read the YAML.
 
-Note which fields the platform filled in (system, owner, type, lifecycle) and which a team would still add (links, docs, tags). Ownership comes from the platform's objects, so it cannot drift from what runs.
+Note which fields the platform filled in (system, type, lifecycle) and which a team would still add (links, docs, tags). Then look at `spec.owner`: it is `openchoreo-users`, the portal's default group, not a team. The platform creates the entities, but it does not know who owns them until someone says so.
+
+### 3. Give the project an owner
+
+A project's `backstage.io/owner` annotation sets the owner of its System and of every component in it; a component can still set its own. Use the full reference, `group:default/NAME`: generated entities live in a catalog namespace named after their OpenChoreo namespace, while the groups from the identity provider live in `default`, so a bare name would point at a group that does not exist. `developers` is one of the groups the local install creates; if your Group filter does not list it, use a group it does list.
+
+```bash
+kubectl annotate project default -n default \
+  backstage.io/owner=group:default/developers --overwrite
+kubectl get project default -n default -o jsonpath='{.metadata.annotations}'; echo
+```
+
+After the catalog's next sync, a few minutes, reload `greeter-service`: its owner is `developers`, inherited from the project, and it links to the group. Lab 3 makes this part of onboarding, so every team's projects carry the team's own group.
 
 ## B. Register an extra entry
 
-### 3. Fill in the catalog-info file
+### 4. Fill in the catalog-info file
 
-Some things a team owns are not run by the platform, such as a documentation site. `catalog/pilot-docs-site.yaml` follows the catalog-info example in The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026): a Component with tags, a link, and a spec that names type, lifecycle and owner. The owner must be a group that exists in the catalog: in the portal catalog, set the Kind filter to Group and pick one. Put its name on the first line, then paste the rest.
+Some things a team owns are not run by the platform, such as a documentation site. `catalog/pilot-docs-site.yaml` follows the catalog-info example in The Platform Engineer's Handbook by Ajay Chankramath (Packt, 2026): a Component with tags, a link, and a spec that names type, lifecycle and owner. The owner must be a group that exists in the catalog, written in full as `group:default/NAME`; the file already has the `group:default/` part. `developers` from the last step works; to pick another, set the catalog's Kind filter to Group. Put its name on the first line, then paste the rest.
 
 The book is not required for this course, but we recommend it to go deeper: [peh-packt.platformetrics.com](https://peh-packt.platformetrics.com) or [Amazon](https://www.amazon.com/dp/B0FR59Z7Q2).
 
 ```bash
-GROUP=name-of-a-group-from-the-portal
+GROUP=developers
 cd ~/oc-210-labs/lab2-catalog-check
 sed -e "s/REPLACE-WITH-AN-EXISTING-GROUP/$GROUP/" \
     -e "s/REPLACE-WITH-YOUR-PROJECT-NAME/default/" \
@@ -67,7 +79,7 @@ cat pilot-docs-site.yaml
 
 The entry joins the `default` System, beside the greeter. The template in `catalog/` stays as it is; your copy is `pilot-docs-site.yaml` in the lab folder.
 
-### 4. Import it through the portal
+### 5. Import it through the portal
 
 > **Verify:** flags can differ between versions. If this fails, run the command with `--help`.
 
@@ -127,7 +139,7 @@ Paste the raw URL the `gh api` line printed into the import page, then Analyze a
 
 ## C. Completeness check
 
-### 5. Check each entry
+### 6. Check each entry
 
 The program checks each entry for an owner, a lifecycle, at least one link and a system. Run it on your entry beside the two samples.
 
@@ -143,13 +155,15 @@ It prints yes or NO for each item and the percentage of checks passed. `orphan-s
 ## Checkpoint
 
 - [ ] You can name the Domain, System and Component the portal generated for Lab 1's objects
+- [ ] `greeter-service` shows `developers` as its owner, not `openchoreo-users`
 - [ ] The extra entry shows a named owner and sits in the `default` System
 - [ ] `catalog_check.py` shows `pilot-docs-site` as complete
 
 ## Troubleshooting
 
 - Import fails: the URL must be the raw file URL and reachable from the portal. If the portal says it is not allowed to read that host, the portal's `backend.reading.allow` list needs it.
-- Owner shows as unknown: the group does not exist in the catalog. Pick a name from the Group filter and repeat step 3.
+- Owner still `openchoreo-users`: the catalog has not synced yet. Wait a few minutes and reload, and check the annotation with `kubectl get project default -n default -o jsonpath='{.metadata.annotations}'`.
+- Owner shown but not a link, or shown as unknown: the group does not exist in the catalog, or the value is not a full `group:default/NAME` reference. Pick a name from the Group filter and repeat the step.
 - No **Inspect entity** in the menu: open the entity's page, then the three-dot menu at the top right. Some portal versions call it View YAML.
 - Entities missing: wait a minute; the catalog refreshes on a schedule.
 

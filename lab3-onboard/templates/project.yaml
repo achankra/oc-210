@@ -3,6 +3,9 @@ kind: Project
 metadata:
   name: ${PROJECT}
   namespace: ${TEAM}
+  annotations:
+    # The team's group owns the project in the catalog; its components inherit it.
+    backstage.io/owner: group:default/${TEAM}
 spec:
   deploymentPipelineRef:
     name: ${TEAM}-deployment-pipeline

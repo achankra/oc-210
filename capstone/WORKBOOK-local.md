@@ -6,8 +6,8 @@
 
 | Step | What | Where | Done |
 |---|---|---|---|
-| 1 | Team space: namespace, environments, pipeline (platform team) | `onboard.sh` | ☐ |
-| 2 | Project `beta-shop` from the Starter tier wizard | Portal | ☐ |
+| 1 | Team space: namespace, environments, pipeline, the team's group (platform team) | `onboard.sh` | ☐ |
+| 2 | Project `beta-shop` from the Starter tier wizard, then its owner | Portal and `set-owner.sh` | ☐ |
 | 3 | team-developer role and binding for team-beta-developers | `apply-access.sh` | ☐ |
 | 4 | Service `order-service` from the Service wizard, deployed and promoted | Portal | ☐ |
 | 5 | The catalog entry, its owner and the quota in the cell | Portal and terminal | ☐ |
@@ -54,6 +54,7 @@ Choose **Create** in the left menu (or http://openchoreo.localhost:8080/create).
 ```bash
 cd ~/oc-210-labs/lab3-onboard
 ./scripts/mark.sh "project" "portal: Create Project, beta-shop"
+./set-owner.sh team-beta beta-shop --apply
 kubectl get projectreleasebindings -n team-beta
 ```
 
@@ -117,7 +118,7 @@ xdg-open http://openchoreo.localhost:8080/catalog
 explorer.exe http://openchoreo.localhost:8080/catalog
 ```
 
-In the portal, check `order-service` under the beta-shop System and its owner.
+In the portal, check `order-service` under the beta-shop System and its owner: `team-beta`, inherited from beta-shop. If it still says `openchoreo-users`, the catalog has not synced yet; check again before the end.
 
 ### 7. Read the scorecard
 
@@ -142,14 +143,14 @@ The metrics and the seven-minute friction threshold come from The Platform Engin
 
 The clock has stopped. Choose **Audit Logs** in the portal's left menu and find team-beta's changes: the environments and pipeline that `onboard.sh` applied with `occ`, `beta-shop` from the wizard, the role and binding, `order-service`, and its promotion to staging. Each entry names who made the change and whether it was allowed.
 
-One change is missing: the namespace. `onboard.sh` creates it with `kubectl`, which does not go through the OpenChoreo API, so the audit log never sees it. Anything a team should be able to audit has to go through the API: the portal, `occ`, or an agent through MCP.
+Two changes are missing: the namespace and the owner annotation. `onboard.sh` and `set-owner.sh` make them with `kubectl`, which does not go through the OpenChoreo API, so the audit log never sees them. The group lives in ThunderID, which keeps its own records. Anything a team should be able to audit has to go through the API: the portal, `occ`, or an agent through MCP.
 
 ## Checkpoint
 
 - [ ] team-beta has a running, reachable service, created through the portal
-- [ ] The catalog shows it with an owner
+- [ ] The catalog shows `team-beta` as the owner of beta-shop and order-service, not `openchoreo-users`
 - [ ] Your time is under 15 minutes, or you can name the slow step
-- [ ] Audit Logs shows team-beta's changes, and you can say why the namespace is not among them
+- [ ] Audit Logs shows team-beta's changes, and you can say why the namespace and the owner annotation are not among them
 
 ## Troubleshooting
 
@@ -157,6 +158,7 @@ One change is missing: the namespace. `onboard.sh` creates it with `kubectl`, wh
 - The log is empty: run `ls ~/oc-210-labs/lab3-onboard/onboarding-log.csv`; every terminal block must start with that `cd`.
 - No Starter tier wizard: run `kubectl get clusterprojecttypes`; repeat Lab 4 part B if `starter-tier` is missing.
 - No cell namespaces for beta-shop: run `./scripts/bind-project.sh team-beta beta-shop`.
+- Owner still `openchoreo-users`: run `kubectl get project beta-shop -n team-beta -o jsonpath='{.metadata.annotations}'`; if `backstage.io/owner` is missing, run `./set-owner.sh team-beta beta-shop --apply`. Otherwise wait for the catalog's next sync.
 - `cell namespace` empty in the last step: wait a minute for the ProjectReleaseBinding, then run the block again.
 
 ---

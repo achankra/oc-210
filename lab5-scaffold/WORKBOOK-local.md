@@ -81,7 +81,7 @@ xdg-open http://openchoreo.localhost:8080/catalog
 explorer.exe http://openchoreo.localhost:8080/catalog
 ```
 
-Open `order-service` under the alpha-pilot System and check its owner and its deployments. Promote it to staging from the component's Deploy page, or from a terminal:
+Open `order-service` under the alpha-pilot System and check its deployments, and its owner: `team-alpha`, inherited from alpha-pilot. Promote it to staging from the component's Deploy page, or from a terminal:
 
 ```bash
 occ component deploy order-service --to staging -n team-alpha -p alpha-pilot
@@ -112,7 +112,7 @@ The same ComponentType reference, image and endpoint the wizard asked for. The p
 ## Checkpoint
 
 - [ ] `order-service`, created in the portal, answers through the gateway in development and in staging
-- [ ] It appears in the catalog under the alpha-pilot System
+- [ ] It appears in the catalog under the alpha-pilot System, owned by `team-alpha`
 - [ ] You can point to the ComponentType reference, image and endpoint in what the wizard created
 
 ## Troubleshooting

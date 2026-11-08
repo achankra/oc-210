@@ -1,5 +1,5 @@
 plane,score,evidence
-Service catalog and ownership,2,The default namespace project and greeter-service appear as Domain System and Component entities without anyone writing catalog files; not every entry names an owning team
+Service catalog and ownership,2,The default namespace project and greeter-service appear as Domain System and Component entities without anyone writing catalog files; every one is owned by the portal's default group openchoreo-users rather than a team
 Golden paths and scaffolding,2,The Create page has a Create Project wizard and a Create Component wizard for each ComponentType (service web-application scheduled-task worker); there is no per-language template library
 Operations and reliability,2,The component page shows deployments per environment and logs and opens a shell into a running instance; no runbooks or SLOs are attached
 Security and governance,3,Access control shows roles and bindings; the Audit Logs page lists who changed what and whether it was allowed

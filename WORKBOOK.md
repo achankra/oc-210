@@ -42,6 +42,7 @@ In the sandbox edition: A sandbox session lasts one hour and keeps nothing. Each
 | Create a service | Portal: Create, the Component card, then the template for the ComponentType · API: `occ component scaffold` and `occ apply -f` |
 | Team space | `./onboard.sh TEAM [--apply]`: namespace, environments and pipeline, no project |
 | Missing cells | `./scripts/bind-project.sh TEAM PROJECT`: one ProjectReleaseBinding per environment |
+| Project owner | `./set-owner.sh TEAM PROJECT --apply`: `backstage.io/owner=group:default/TEAM`; components inherit it |
 | List | `occ namespace list` · `occ project list -n team-alpha` · `occ component list -n team-alpha` |
 | Deploy / promote | Portal: the component's Deploy page · `occ component deploy <name> --to staging -n <ns> -p <project>` |
 | Types behind the wizards | `kubectl get clusterprojecttypes` · `kubectl get clustercomponenttypes` |

@@ -4,7 +4,7 @@ In Lab 2 you see how the portal builds the catalog from what the platform runs: 
 
 | Path | Purpose |
 |---|---|
-| `catalog/pilot-docs-site.yaml` | The entry you register in step 3. Replace the owner and the system |
+| `catalog/pilot-docs-site.yaml` | The entry you register in step 4. Replace the owner and the system |
 | `catalog/billing-api.yaml` | A complete entry, for comparison |
 | `catalog/orphan-service.yaml` | An incomplete entry that shows what the check reports |
 | `catalog_check.py` | Checks entries for an owner, a lifecycle, a link and a system |
@@ -15,7 +15,7 @@ The steps for this lab are in [WORKBOOK-local.md](WORKBOOK-local.md), or [WORKBO
 
 | File | Created in | What it is |
 |---|---|---|
-| `pilot-docs-site.yaml` | step 3 | Your filled-in copy of `catalog/pilot-docs-site.yaml`, with your group as owner and `default` as its system |
+| `pilot-docs-site.yaml` | step 4 | Your filled-in copy of `catalog/pilot-docs-site.yaml`, with your group as owner and `default` as its system |
 
 Git ignores it. It depends on your group name, so there is no reference copy.
 
@@ -52,9 +52,10 @@ Run on the whole folder, the check includes all three files. Add `--strict` to e
 ## What you should see
 
 - The greeter from Lab 1 appears as a Component in the `default` System, and its entity was generated, not written.
+- Its owner starts as `openchoreo-users`, the portal's default. After `kubectl annotate project default -n default backstage.io/owner=group:default/developers --overwrite` and the catalog's next sync, it is `developers`, inherited from the project.
 - Your entry appears in the portal with its owner shown, in the same System.
-- If the owner shows as unknown, the group does not exist in the catalog yet. Pick one from the Group filter.
+- If the owner shows as unknown or is not a link, the group does not exist in the catalog, or the value is not a full `group:default/NAME` reference. Pick one from the Group filter.
 
 ## How it maps to OpenChoreo
 
-OpenChoreo creates the Domain, System and Component entities for your namespaces, projects and components, so ownership comes from the platform's objects and cannot drift from what runs. The file here is for something OpenChoreo does not run, such as a documentation site. The completeness check is the same one you would use to decide whether a catalog is healthy: an entry without an owner is an entry nobody will fix.
+OpenChoreo creates the Domain, System and Component entities for your namespaces, projects and components, so nobody writes catalog files for what the platform runs. Ownership is the exception: every generated entity starts with the portal's default owner, `openchoreo-users`, until the project or component has a `backstage.io/owner` annotation. Use the full reference, `group:default/NAME`, because generated entities live in a catalog namespace named after their OpenChoreo namespace while the identity provider's groups live in `default`. A component takes its own annotation first, then its project's, then the default. Lab 3 sets the annotation as part of onboarding. The file here is for something OpenChoreo does not run, such as a documentation site. The completeness check is the same one you would use to decide whether a catalog is healthy: an entry without an owner is an entry nobody will fix.

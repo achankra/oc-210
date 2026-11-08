@@ -26,7 +26,7 @@ for f in \
   lab3-onboard/scripts/bind-project.sh lab5-scaffold/create-order-service.sh \
   lab1-portal-scorecard/{WORKBOOK-local.md,scorecard.py,sample-scorecard.csv,scorecard-template.csv} \
   lab2-catalog-check/{WORKBOOK-local.md,catalog_check.py,catalog/pilot-docs-site.yaml,catalog/billing-api.yaml,catalog/orphan-service.yaml} \
-  lab3-onboard/{WORKBOOK-local.md,onboard.sh,scripts/mark.sh,scripts/lib.sh,scripts/render.py} \
+  lab3-onboard/{WORKBOOK-local.md,onboard.sh,set-owner.sh,scripts/mark.sh,scripts/lib.sh,scripts/render.py,scripts/create-group.sh} \
   lab3-onboard/templates/{namespace,environments,pipeline,project,bindings}.yaml \
   lab4-roles-quota/{WORKBOOK-local.md,apply-access.sh,check_quota.py,starter-tier-quota.yaml,templates/role.yaml,templates/binding.yaml,samples/quota-starter.json,samples/quota-wrong.json} \
   lab5-scaffold/{WORKBOOK-local.md,check-endpoint.sh} \
@@ -44,7 +44,8 @@ done
 ok "relative links checked"
 
 echo "Scripts"
-for s in lab3-onboard/onboard.sh lab3-onboard/scripts/mark.sh lab3-onboard/scripts/bind-project.sh \
+for s in lab3-onboard/onboard.sh lab3-onboard/set-owner.sh lab3-onboard/scripts/mark.sh \
+         lab3-onboard/scripts/bind-project.sh lab3-onboard/scripts/create-group.sh \
          lab4-roles-quota/apply-access.sh lab5-scaffold/check-endpoint.sh lab5-scaffold/create-order-service.sh \
          capstone/repeat.sh sandbox/restore.sh; do
   [ -x "$s" ] || bad "$s is not executable: chmod +x $s"
@@ -91,6 +92,12 @@ check "onboard.sh TEAM renders the team space and no project" bash -c \
 check "onboard.sh TEAM PROJECT renders all five files" bash -c \
   "cd '$tmp/team/rendered/team-x' && ls namespace.yaml environments.yaml pipeline.yaml project.yaml bindings.yaml"
 fails "onboard.sh refuses an option in place of the team" "$root/lab3-onboard/onboard.sh" --apply
+check "the API path's project is owned by the team's group" \
+  grep -q 'backstage.io/owner: group:default/team-x' "$tmp/team/rendered/team-x/project.yaml"
+fails "set-owner.sh refuses a missing project" "$root/lab3-onboard/set-owner.sh" team-x
+fails "create-group.sh refuses a missing group" "$root/lab3-onboard/scripts/create-group.sh"
+check "create-group.sh skips cleanly when ThunderID is not reachable" bash -c \
+  "THUNDER_URL=http://127.0.0.1:9 '$root/lab3-onboard/scripts/create-group.sh' team-x 2>&1 | grep -q 'Skipped the group'"
 
 echo "Lab 4: role, binding, quota"
 for t in role binding; do

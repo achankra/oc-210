@@ -4,8 +4,10 @@
 # Usage: ./onboard.sh TEAM [PROJECT] [options]
 #
 # With TEAM only, it creates the team space (namespace, environments and pipeline)
-# and no project: the team then creates its project in the portal's Create Project
-# wizard. With PROJECT, it also creates the project and one binding per environment.
+# and the team's group in the identity provider, and no project: the team then
+# creates its project in the portal's Create Project wizard, and ./set-owner.sh gives
+# it the team's group as owner. With PROJECT, it also creates the project, owned by
+# the team's group, and one binding per environment.
 #
 # By default this renders the files and checks them without touching the
 # cluster. Add --apply to create the objects.
@@ -27,7 +29,7 @@ set -eu
 here="$(cd "$(dirname "$0")" && pwd)"
 . "$here/scripts/lib.sh"
 
-[ $# -ge 1 ] && [ "${1#-}" = "$1" ] || { sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
+[ $# -ge 1 ] && [ "${1#-}" = "$1" ] || { sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//'; exit 1; }
 TEAM="$1"; shift
 PROJECT=""
 if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then PROJECT="$1"; shift; fi
@@ -95,6 +97,7 @@ if [ "$APPLY" -eq 0 ]; then
   for name in $FILES; do
     run kubectl apply --dry-run=client -f "$out/$name.yaml"
   done
+  echo "Would create the group $TEAM in ThunderID (scripts/create-group.sh $TEAM)"
   echo
   echo "Nothing was created. Run again with --apply."
   exit 0
@@ -103,6 +106,9 @@ fi
 STEP="namespace"
 run kubectl apply --dry-run=server -f "$out/namespace.yaml"
 run kubectl apply -f "$out/namespace.yaml"
+
+STEP="group"
+run "$here/scripts/create-group.sh" "$TEAM"
 
 for name in $FILES; do
   [ "$name" = namespace ] && continue
@@ -116,7 +122,7 @@ run occ namespace list
 if [ -z "$PROJECT" ]; then
   run kubectl get environments,deploymentpipelines -n "$TEAM"
   echo
-  echo "Team space $TEAM is ready. The team creates its project in the portal. Log: $ONBOARD_LOG"
+  echo "Team space $TEAM is ready. The team creates its project in the portal; then run ./set-owner.sh $TEAM PROJECT --apply. Log: $ONBOARD_LOG"
   exit 0
 fi
 run occ project list -n "$TEAM"
@@ -130,4 +136,4 @@ for _ in $(seq 1 24); do
 done
 run kubectl get namespaces -l openchoreo.dev/project="$PROJECT" -L openchoreo.dev/environment
 echo
-echo "Onboarded $TEAM with project $PROJECT. Log: $ONBOARD_LOG"
+echo "Onboarded $TEAM with project $PROJECT, owned by group:default/$TEAM. Log: $ONBOARD_LOG"

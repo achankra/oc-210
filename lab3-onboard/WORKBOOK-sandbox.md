@@ -57,7 +57,7 @@ kubectl get namespace team-alpha --show-labels
 occ namespace list
 ```
 
-With a team name only, the script creates the space and no project: the team creates that itself, next. `team-alpha` now appears in `occ namespace list` and, as a Domain, in the portal.
+With a team name only, the script creates the space and no project: the team creates that itself, next. It also creates the group `team-alpha` in ThunderID, the local identity provider; the portal syncs it into the catalog as `group:default/team-alpha`, the group that will own the team's projects. `team-alpha` now appears in `occ namespace list` and, as a Domain, in the portal.
 
 ## B. The team creates its project
 
@@ -70,7 +70,19 @@ cd ~/oc-210-labs/lab3-onboard
 ./scripts/mark.sh "project" "portal: Create Project, alpha-shop"
 ```
 
-### 4. Check the cells and stop the clock
+### 4. Give alpha-shop its owner
+
+The wizard has no owner field, so the new project starts with the portal's default owner, `openchoreo-users`. One command from the platform team sets it to the team's group; the project's components inherit it.
+
+```bash
+cd ~/oc-210-labs/lab3-onboard
+./set-owner.sh team-alpha alpha-shop
+./set-owner.sh team-alpha alpha-shop --apply
+```
+
+It runs `kubectl annotate project alpha-shop -n team-alpha backstage.io/owner=group:default/team-alpha` and logs the step. After the catalog's next sync, the alpha-shop System shows `team-alpha` as its owner.
+
+### 5. Check the cells and stop the clock
 
 ```bash
 cd ~/oc-210-labs/lab3-onboard
@@ -85,7 +97,7 @@ The wizard creates a ProjectReleaseBinding for each environment in the pipeline,
 
 ## C. The API underneath
 
-### 5. Read what the wizard created
+### 6. Read what the wizard created
 
 The portal's wizard calls the same OpenChoreo API that occ uses (its scaffolder action is `openchoreo:project:create`). Compare the project it created with the template the script uses.
 
@@ -96,9 +108,9 @@ cat templates/project.yaml
 kubectl get projectreleasebinding -n team-alpha -o name
 ```
 
-The same few fields: a name, a namespace, a pipeline and a ProjectType. The bindings are what give the project its cells; a project applied with `kubectl` gets none, which is why the script also renders `templates/bindings.yaml`.
+The same few fields: a name, a namespace, a pipeline and a ProjectType. The template also sets the `backstage.io/owner` annotation, which the wizard cannot; that is what `set-owner.sh` added. The bindings are what give the project its cells; a project applied with `kubectl` gets none, which is why the script also renders `templates/bindings.yaml`.
 
-### 6. Onboard a second team through the API
+### 7. Onboard a second team through the API
 
 When onboarding needs to run without a person, for example from an HR system or a chatbot, the same objects come from the API. The script does it in one command, project and bindings included.
 
@@ -110,12 +122,13 @@ occ project list -n team-demo
 ls rendered/team-demo/
 ```
 
-Portal and script produce the same objects through the same API. The portal is the self-service path for people; the API is the path for automation.
+Portal and script produce the same objects through the same API, and the script's project is owned by `group:default/team-demo` from the start. The portal is the self-service path for people; the API is the path for automation.
 
 ## Checkpoint
 
 - [ ] `occ namespace list` shows `team-alpha` and `team-demo`
 - [ ] `alpha-shop`, created in the portal, has a cell namespace in development and staging
+- [ ] The catalog shows `team-alpha` as the owner of alpha-shop, not `openchoreo-users`
 - [ ] You have a recorded onboarding time from `onboarding_scorecard.py`
 
 ## Troubleshooting
@@ -123,6 +136,7 @@ Portal and script produce the same objects through the same API. The portal is t
 - `team-alpha` missing from the namespace list in the wizard: run `kubectl get namespace team-alpha --show-labels`; it needs `openchoreo.dev/control-plane=true`. Then wait a minute for the portal to refresh.
 - No pipeline to pick in the wizard: run `kubectl get deploymentpipelines -n team-alpha`; run `./onboard.sh team-alpha --apply` again if it is missing.
 - No cell namespaces for the project: run `./scripts/bind-project.sh team-alpha alpha-shop`.
+- `onboard.sh` says it skipped the group: it could not reach ThunderID's management API. The space is created anyway, and the owner shows without a link to a group. Check `kubectl get httproute -n thunder`, then run `./scripts/create-group.sh team-alpha`.
 - `onboard.sh` cannot read the data plane: run `kubectl get environment development -n default -o yaml | grep -A3 dataPlaneRef`.
 - The wizard reports an error after Create: the project may still have been created. Run `occ project list -n team-alpha` before trying again.
 
